@@ -1,0 +1,356 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.2",
+    "types": [],
+    "structs": [
+        {
+            "name": "additem",
+            "base": "",
+            "fields": [
+                {
+                    "name": "seller",
+                    "type": "name"
+                },
+                {
+                    "name": "category",
+                    "type": "name"
+                },
+                {
+                    "name": "title",
+                    "type": "string"
+                },
+                {
+                    "name": "imgs",
+                    "type": "string[]"
+                },
+                {
+                    "name": "price",
+                    "type": "uint64"
+                },
+                {
+                    "name": "prepT",
+                    "type": "uint32"
+                },
+                {
+                    "name": "fromR",
+                    "type": "string"
+                },
+                {
+                    "name": "excl",
+                    "type": "string"
+                },
+                {
+                    "name": "shipTo",
+                    "type": "toRegion[]"
+                },
+                {
+                    "name": "options",
+                    "type": "string[]"
+                },
+                {
+                    "name": "descr",
+                    "type": "string"
+                },
+                {
+                    "name": "note",
+                    "type": "string"
+                },
+                {
+                    "name": "available",
+                    "type": "bool"
+                },
+                {
+                    "name": "expired",
+                    "type": "uint32"
+                }
+            ]
+        },
+        {
+            "name": "ban",
+            "base": "",
+            "fields": [
+                {
+                    "name": "seller",
+                    "type": "name"
+                },
+                {
+                    "name": "ban",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "deleteseller",
+            "base": "",
+            "fields": [
+                {
+                    "name": "seller",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "idAndCategory",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "category",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "itemTable",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "seller",
+                    "type": "name"
+                },
+                {
+                    "name": "available",
+                    "type": "bool"
+                },
+                {
+                    "name": "title",
+                    "type": "string"
+                },
+                {
+                    "name": "imgs",
+                    "type": "string[]"
+                },
+                {
+                    "name": "price",
+                    "type": "uint64"
+                },
+                {
+                    "name": "prepT",
+                    "type": "uint32"
+                },
+                {
+                    "name": "fromR",
+                    "type": "string"
+                },
+                {
+                    "name": "shipTo",
+                    "type": "toRegion[]"
+                },
+                {
+                    "name": "excl",
+                    "type": "string"
+                },
+                {
+                    "name": "options",
+                    "type": "string[]"
+                },
+                {
+                    "name": "descr",
+                    "type": "string"
+                },
+                {
+                    "name": "note",
+                    "type": "string"
+                },
+                {
+                    "name": "expired",
+                    "type": "uint32"
+                }
+            ]
+        },
+        {
+            "name": "itemstate",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "category",
+                    "type": "name"
+                },
+                {
+                    "name": "available",
+                    "type": "bool"
+                },
+                {
+                    "name": "expired",
+                    "type": "uint32"
+                }
+            ]
+        },
+        {
+            "name": "removeitem",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "category",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "rmexpired",
+            "base": "",
+            "fields": [
+                {
+                    "name": "category",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "sellerTable",
+            "base": "",
+            "fields": [
+                {
+                    "name": "seller",
+                    "type": "name"
+                },
+                {
+                    "name": "allowed",
+                    "type": "tokenSymbol[]"
+                },
+                {
+                    "name": "active",
+                    "type": "bool"
+                },
+                {
+                    "name": "lastUpdate",
+                    "type": "uint32"
+                },
+                {
+                    "name": "items",
+                    "type": "idAndCategory[]"
+                },
+                {
+                    "name": "banned",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "toRegion",
+            "base": "",
+            "fields": [
+                {
+                    "name": "t",
+                    "type": "int32"
+                },
+                {
+                    "name": "p",
+                    "type": "int32"
+                },
+                {
+                    "name": "rs",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "tokenSymbol",
+            "base": "",
+            "fields": [
+                {
+                    "name": "sym",
+                    "type": "symbol"
+                },
+                {
+                    "name": "contr",
+                    "type": "name"
+                },
+                {
+                    "name": "chain",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "updateseller",
+            "base": "",
+            "fields": [
+                {
+                    "name": "seller",
+                    "type": "name"
+                },
+                {
+                    "name": "allowed",
+                    "type": "tokenSymbol[]"
+                },
+                {
+                    "name": "active",
+                    "type": "bool"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "additem",
+            "type": "additem",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "ban",
+            "type": "ban",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "deleteseller",
+            "type": "deleteseller",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "itemstate",
+            "type": "itemstate",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "removeitem",
+            "type": "removeitem",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "rmexpired",
+            "type": "rmexpired",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "updateseller",
+            "type": "updateseller",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "item",
+            "type": "itemTable",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "seller",
+            "type": "sellerTable",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "kv_tables": {},
+    "ricardian_clauses": [],
+    "variants": [],
+    "action_results": []
+}

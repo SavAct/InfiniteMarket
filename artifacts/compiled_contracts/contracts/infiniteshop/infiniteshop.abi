@@ -80,7 +80,7 @@
             ]
         },
         {
-            "name": "deleteseller",
+            "name": "deleteuser",
             "base": "",
             "fields": [
                 {
@@ -212,36 +212,6 @@
             ]
         },
         {
-            "name": "sellerTable",
-            "base": "",
-            "fields": [
-                {
-                    "name": "seller",
-                    "type": "name"
-                },
-                {
-                    "name": "allowed",
-                    "type": "tokenSymbol[]"
-                },
-                {
-                    "name": "active",
-                    "type": "bool"
-                },
-                {
-                    "name": "lastUpdate",
-                    "type": "uint32"
-                },
-                {
-                    "name": "items",
-                    "type": "idAndCategory[]"
-                },
-                {
-                    "name": "banned",
-                    "type": "bool"
-                }
-            ]
-        },
-        {
             "name": "toRegion",
             "base": "",
             "fields": [
@@ -278,11 +248,11 @@
             ]
         },
         {
-            "name": "updateseller",
+            "name": "updateuser",
             "base": "",
             "fields": [
                 {
-                    "name": "seller",
+                    "name": "user",
                     "type": "name"
                 },
                 {
@@ -292,6 +262,52 @@
                 {
                     "name": "active",
                     "type": "bool"
+                },
+                {
+                    "name": "pgp",
+                    "type": "string"
+                },
+                {
+                    "name": "note",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "userTable",
+            "base": "",
+            "fields": [
+                {
+                    "name": "user",
+                    "type": "name"
+                },
+                {
+                    "name": "allowed",
+                    "type": "tokenSymbol[]"
+                },
+                {
+                    "name": "active",
+                    "type": "bool"
+                },
+                {
+                    "name": "lastUpdate",
+                    "type": "uint32"
+                },
+                {
+                    "name": "items",
+                    "type": "idAndCategory[]"
+                },
+                {
+                    "name": "banned",
+                    "type": "bool"
+                },
+                {
+                    "name": "pgp",
+                    "type": "string"
+                },
+                {
+                    "name": "note",
+                    "type": "string"
                 }
             ]
         }
@@ -308,8 +324,8 @@
             "ricardian_contract": ""
         },
         {
-            "name": "deleteseller",
-            "type": "deleteseller",
+            "name": "deleteuser",
+            "type": "deleteuser",
             "ricardian_contract": ""
         },
         {
@@ -328,8 +344,8 @@
             "ricardian_contract": ""
         },
         {
-            "name": "updateseller",
-            "type": "updateseller",
+            "name": "updateuser",
+            "type": "updateuser",
             "ricardian_contract": ""
         }
     ],
@@ -342,8 +358,8 @@
             "key_types": []
         },
         {
-            "name": "seller",
-            "type": "sellerTable",
+            "name": "user",
+            "type": "userTable",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

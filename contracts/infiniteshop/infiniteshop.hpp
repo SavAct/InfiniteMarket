@@ -55,61 +55,40 @@ namespace savactshop {
     };
     typedef multi_index<name("item"), itemTable> items_table;
 
-    TABLE sellerTable{
-      name seller;
+    TABLE userTable{
+      name user;
       vector<tokenSymbol> allowed;
       bool active;
       uint32_t lastUpdate;
       list<idAndCategory> items;
       bool banned;
+      string pgp;
+      string note;
 
-      uint64_t primary_key() const { return seller.value; }
+      uint64_t primary_key() const { return user.value; }
     };
-    typedef multi_index<name("seller"), sellerTable> sellers_table;
+    typedef multi_index<name("user"), userTable> users_table;
 
-    inline void checkValidExpirationDate(uint32_t expired) {
-      check(eosio::current_time_point().sec_since_epoch() + EXPIRATION_DATE_MIN <= expired, "Expiration date is too early");
-      check(eosio::current_time_point().sec_since_epoch() + EXPIRATION_DATE_MAX > expired, "Expiration date is too late");
-    }
-
-    inline void removeItemFromSellerTable(const name& seller, const uint64_t id, const name& category) {
-      sellers_table _sellers(get_self(), get_self().value);
-      auto seller_itr = _sellers.find(seller.value);
-      check(seller_itr != _sellers.end(), "Seller not found");
-      removeItemFromSellerTable(_sellers, seller_itr, id, category);
-    }
-
-    inline void removeItemFromSellerTable(sellers_table& sellers_Table, const sellers_table::const_iterator& seller_itr, const uint64_t id, const name& category) {
-      auto item_itr = seller_itr->items.begin();
-      while (item_itr != seller_itr->items.end()) {
-        if (item_itr->id == id && item_itr->category == category) {
-          sellers_Table.modify(seller_itr, get_self(), [&](auto& s) {
-            s.items.erase(item_itr);
-            });
-          break;
-        }
-        else {
-          item_itr++;
-        }
-      }
-    }
+    inline void checkValidExpirationDate(uint32_t expired);
+    inline void removeItemFromUserTable(const name& user, const uint64_t id, const name& category);
+    inline void removeItemFromUserTable(users_table& users_Table, const users_table::const_iterator& user_itr, const uint64_t id, const name& category);
 
   public:
     infiniteshop(name s, name code, datastream<const char*> ds);
 
     /**
-     * @brief Delete a seller and all his items
+     * @brief Delete a user and all his items
      *
-     * @param seller Seller account name
+     * @param user User account name
      */
-    ACTION deleteseller(const name& seller) {
+    ACTION deleteuser(const name& seller) {
       // The seller and the contract owner can delete the seller
       if (!has_auth(get_self())) {
         require_auth(seller);
       }
-      sellers_table _sellers(get_self(), get_self().value);
-      auto itr = _sellers.find(seller.value);
-      check(itr != _sellers.end(), "Seller not found");
+      users_table _users(get_self(), get_self().value);
+      auto itr = _users.find(seller.value);
+      check(itr != _users.end(), "Seller not found");
       if (itr->items.size() > 0) {
         for (auto& i : itr->items) {
           items_table _items(get_self(), i.category.value);
@@ -120,22 +99,22 @@ namespace savactshop {
         }
       }
       if (!(itr->banned)) {
-        _sellers.erase(itr);
+        _users.erase(itr);
       }
     }
 
     /**
-     * @brief Ban a seller
+     * @brief Ban a user
      *
-     * @param seller Seller account name
+     * @param user User account name
      * @param ban Ban or unban
      */
     ACTION ban(const name& seller, const bool ban) {
       require_auth(get_self());
-      sellers_table _sellers(get_self(), get_self().value);
-      auto itr = _sellers.find(seller.value);
-      check(itr != _sellers.end(), "Seller not found");
-      _sellers.modify(itr, get_self(), [&](auto& s) {
+      users_table _users(get_self(), get_self().value);
+      auto itr = _users.find(seller.value);
+      check(itr != _users.end(), "User not found");
+      _users.modify(itr, get_self(), [&](auto& s) {
         s.banned = ban;
         s.active = false;
         });
@@ -143,29 +122,45 @@ namespace savactshop {
 
 
     /**
-     * @brief Update property of a seller
+     * @brief Update property of a user
      *
-     * @param seller Seller account name
-     * @param allowed Allowed token symbols
-     * @param active Seller is active
+     * @param user User account name
+     * @param allowed Allowed token symbols. Can be empty if already defined
+     * @param active User is active
+     * @param pgp PGP public key. Can be empty if already defined
+     * @param note Note of this user. Can be empty if already defined
      */
-    ACTION updateseller(const name& seller, const vector<tokenSymbol>& allowed, const bool active) {
-      require_auth(seller);
-      sellers_table _sellers(get_self(), get_self().value);
-      auto itr = _sellers.find(seller.value);
-      if (itr != _sellers.end()) {
-        _sellers.modify(itr, get_self(), [&](auto& s) {
-          s.allowed = allowed;
+    ACTION updateuser(const name& user, const vector<tokenSymbol>& allowed, const bool active, const string& pgp, const string& note) {
+      require_auth(user);
+      users_table _users(get_self(), get_self().value);
+      auto itr = _users.find(user.value);
+      const bool hasNewTokens = allowed.size() > 0;
+      if (itr != _users.end()) {
+        _users.modify(itr, get_self(), [&](auto& s) {
+          check(hasNewTokens || s.allowed.size() > 0, "No accepted tokens defined");
+          if (hasNewTokens) {
+            s.allowed = allowed;
+          }
           s.active = active;
+          s.lastUpdate = eosio::current_time_point().sec_since_epoch();
+          if (pgp.length() > 0) {
+            s.pgp = pgp;
+          }
+          if (note.length() > 0) {
+            s.note = note;
+          }
           });
       }
       else {
-        _sellers.emplace(get_self(), [&](auto& s) {
-          s.seller = seller;
+        check(hasNewTokens, "No accepted tokens defined");
+        _users.emplace(get_self(), [&](auto& s) {
+          s.user = user;
           s.allowed = allowed;
           s.active = active;
           s.lastUpdate = eosio::current_time_point().sec_since_epoch();
           s.banned = false;
+          s.pgp = pgp;
+          s.note = note;
           });
       }
     }
@@ -189,9 +184,9 @@ namespace savactshop {
         }
       }
       // Check if seller is banned
-      sellers_table _sellers(get_self(), get_self().value);
-      auto seller_itr = _sellers.find(seller.value);
-      check(seller_itr != _sellers.end(), "Seller not found");
+      users_table _users(get_self(), get_self().value);
+      auto seller_itr = _users.find(seller.value);
+      check(seller_itr != _users.end(), "Seller not found");
       check(!(seller_itr->banned), "Seller is banned");
 
       // Add item
@@ -214,15 +209,15 @@ namespace savactshop {
         i.expired = expired;
         });
 
-      // Update seller last update state
-      _sellers.modify(seller_itr, get_self(), [&](auto& s) {
+      // Update user last update state
+      _users.modify(seller_itr, get_self(), [&](auto& s) {
         s.items.push_back({id, category});
         s.lastUpdate = eosio::current_time_point().sec_since_epoch();
         });
     }
 
     /**
-     * @brief Remove an item from items table and seller table
+     * @brief Remove an item from items table and user table
      *
      * @param id Item ID
      * @param category Category name
@@ -239,7 +234,7 @@ namespace savactshop {
       }
 
       // Remove item from seller table
-      removeItemFromSellerTable(item->seller, id, category);
+      removeItemFromUserTable(item->seller, id, category);
 
       // Remove item from item table
       _items.erase(item);
@@ -255,7 +250,7 @@ namespace savactshop {
       auto item = _items.begin();
       while (item != _items.end()) {
         if (eosio::current_time_point().sec_since_epoch() > item->expired) {
-          removeItemFromSellerTable(item->seller, item->id, category);
+          removeItemFromUserTable(item->seller, item->id, category);
           item = _items.erase(item);
         }
         else {
@@ -282,6 +277,13 @@ namespace savactshop {
       _items.modify(item, get_self(), [&](auto& i) {
         i.available = available;
         i.expired = expired;
+        });
+
+      // Update user last update state
+      users_table _users(get_self(), get_self().value);
+      auto seller_itr = _users.find(item->seller.value);
+      _users.modify(seller_itr, get_self(), [&](auto& s) {
+        s.lastUpdate = eosio::current_time_point().sec_since_epoch();
         });
     }
 

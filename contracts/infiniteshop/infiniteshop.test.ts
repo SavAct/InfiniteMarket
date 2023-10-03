@@ -39,26 +39,31 @@ describe('shop', async () => {
   // Add item
   context('Add shop (a/13)', async () => {
     let expirationDate: number;
+    let pgpKey: string;
     before(async () => {
       expirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600;
+      pgpKey =
+        '-----BEGIN PUBLIC KEY-----\nabcdefghijklmnop\n-----END PUBLIC KEY-----';
     });
     context('with correct auth', async () => {
       it('should succeed a1', async () => {
-        await shopContract.updateseller(
+        await shopContract.updateuser(
           sender1.name,
           [
             { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
             { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
           ],
           true,
+          pgpKey,
+          'I like to sell a lot',
           { from: sender1 }
         );
       });
-      it('should update sellers table a2', async () => {
-        const { rows } = await shopContract.sellerTable();
+      it('should update users table a2', async () => {
+        const { rows } = await shopContract.userTable();
         chai.expect(rows.length).equal(1, 'Wrong amount of entries');
         const seller = rows[0];
-        chai.expect(seller.seller).equal(sender1.name, 'Wrong seller name');
+        chai.expect(seller.user).equal(sender1.name, 'Wrong seller name');
         chai.expect(seller.active).equal(true, 'Wrong active state');
         chai.expect(seller.banned).equal(false, 'Wrong banned state');
         chai.expect(seller.items.length).equal(0, 'Wrong item count');
@@ -82,6 +87,9 @@ describe('shop', async () => {
           .equal('thezeostoken', 'Wrong token contract');
         chai.expect(seller.allowed[0].chain).equal('eos', 'Wrong token chain');
         chai.expect(seller.allowed[1].chain).equal('eos', 'Wrong token chain');
+
+        chai.expect(seller.pgp).equal(pgpKey, 'Wrong pgp key');
+        chai.expect(seller.note).equal('I like to sell a lot', 'Wrong note');
       });
       it('should succeed a3', async () => {
         await shopContract.additem(

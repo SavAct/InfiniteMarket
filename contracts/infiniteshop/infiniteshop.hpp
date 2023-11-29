@@ -165,7 +165,7 @@ namespace savactshop {
       }
     }
 
-    ACTION additem(const name& seller, const name& category, const string& title, const vector<string>& imgs, const uint64_t price, const uint32_t prepT, const string& fromR, const string& excl, const vector<toRegion>& shipTo, const vector<string>& options, const string& descr, const string& note, const bool available, const uint32_t expired) {
+    ACTION additem(const name& seller, const name& category, const string& title, const vector<string>& imgs, const uint64_t price, const uint32_t prepT, const string& fromR, const string& excl, const vector<toRegion>& shipTo, const vector<string>& opts, const string& descr, const string& note, const bool available, const uint32_t expired) {
       require_auth(seller);
       checkValidExpirationDate(expired);
       check(title.length() > 3, "Title is too short");
@@ -177,9 +177,9 @@ namespace savactshop {
       for (auto& r : shipTo) {
         check(r.rs.length() >= 2, "Invalid ship region");
       }
-      if (options.size() > 0) {
-        check(options.size() != 1, "Invalid option number");
-        for (auto& opt : options) {
+      if (opts.size() > 0) {
+        check(opts.size() != 1, "Invalid option number");
+        for (auto& opt : opts) {
           check(opt.length() > 0, "Invalid option");
         }
       }
@@ -203,7 +203,7 @@ namespace savactshop {
         i.fromR = fromR;
         i.shipTo = shipTo;
         i.excl = excl;
-        i.options = options;
+        i.options = opts;
         i.descr = descr;
         i.note = note;
         i.expired = expired;

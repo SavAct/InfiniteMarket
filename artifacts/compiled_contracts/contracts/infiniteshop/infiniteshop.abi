@@ -44,7 +44,7 @@
                     "type": "toRegion[]"
                 },
                 {
-                    "name": "options",
+                    "name": "opts",
                     "type": "string[]"
                 },
                 {

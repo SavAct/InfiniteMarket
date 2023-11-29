@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@types/chai-as-promised": "^7.1.2",
-    "@types/chai-datetime": "^0.0.37",
+    "@types/chai-datetime": "^0.0.39",
     "call-bind": "^1.0.2",
     "chai-as-promised": "^7.1.1",
     "chai-datetime": "^1.8.0",

@@ -122,7 +122,7 @@ namespace savactshop {
 
 
     /**
-     * @brief Update property of a user
+     * @brief Add or update properties of a user
      *
      * @param user User account name
      * @param allowed Allowed token symbols. Can be empty if already defined
@@ -180,7 +180,7 @@ namespace savactshop {
       if (opts.size() > 0) {
         check(opts.size() != 1, "Invalid option number");
         for (auto& opt : opts) {
-          check(opt.length() > 0, "Invalid option");
+          check(opt.length() > 0 && opt.length() < 128, "Invalid option text length");
         }
       }
       // Check if seller is banned

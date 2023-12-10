@@ -5,6 +5,11 @@
     }
   ],
   "settings": {
+    "workbench.colorCustomizations": {
+      "titleBar.inactiveBackground": "#56004991",
+      "activityBar.background": "#56004991",
+      "statusBar.background": "#56004991"
+    },
     "files.associations": {
       "vector": "cpp",
       "chrono": "cpp",

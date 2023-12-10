@@ -100,9 +100,9 @@
   integrity sha512-dJvrYWxP/UcXm36Qn36fxhUKu8A/xMRXVT2cliFF1Z7UA9liG5Psj3ezNSZw+5puH2czDXRLcXQxf8JbJt0ejg==
 
 "@types/node@*":
-  version "20.10.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.10.0.tgz#16ddf9c0a72b832ec4fcce35b8249cf149214617"
-  integrity sha512-D0WfRmU9TQ8I9PFx9Yc+EBHw+vSpIub4IDvQivcp26PtPrdMGAq5SDcpXEo/epqa/DXotVpekHiLNTg3iaKXBQ==
+  version "20.10.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.10.4.tgz#b246fd84d55d5b1b71bf51f964bd514409347198"
+  integrity sha512-D08YG6rr8X90YB56tSIuBaddy/UXAA9RKJoFvrsnogAum/0pmjkgi4+2nx96A330FmioegBWmEYQ+syqCFaveg==
   dependencies:
     undici-types "~5.26.4"
 
@@ -684,7 +684,7 @@ define-data-property@^1.0.1, define-data-property@^1.1.1:
     gopd "^1.0.1"
     has-property-descriptors "^1.0.0"
 
-define-properties@^1.1.2, define-properties@^1.1.3, define-properties@^1.1.4, define-properties@^1.2.0:
+define-properties@^1.1.2, define-properties@^1.1.3, define-properties@^1.2.0, define-properties@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/define-properties/-/define-properties-1.2.1.tgz#10781cc616eb951a80a034bafcaa7377f6af2b6c"
   integrity sha512-8QmQKqEASLd5nx0U1B1okLElbUuuttJ/AnYmRXbbbGDWh6uS208EjD4Xqq/I9wK7u0v6O08XhTWnt5XtEbR6Dg==
@@ -1419,7 +1419,7 @@ keyv@^4.0.0:
 
 "lamington@https://github.com/Alien-Worlds/lamington.git":
   version "1.0.0-alpha.6"
-  resolved "https://github.com/Alien-Worlds/lamington.git#8b9832cfee41f323cb9e4f0956d4a1efb6d6b51f"
+  resolved "https://github.com/Alien-Worlds/lamington.git#7665b468a83ab640f33e3d348f424f06588d92f1"
   dependencies:
     "@types/chai-as-promised" "^7.1.3"
     "@types/elliptic" "^6.4.12"
@@ -1707,12 +1707,12 @@ object.assign@4.1.0:
     object-keys "^1.0.11"
 
 object.assign@^4.1.4:
-  version "4.1.4"
-  resolved "https://registry.yarnpkg.com/object.assign/-/object.assign-4.1.4.tgz#9673c7c7c351ab8c4d0b516f4343ebf4dfb7799f"
-  integrity sha512-1mxKf0e58bvyjSCtKYY4sRe9itRk3PJpquJOjeIkz885CczcI4IvJJDLPS72oowuSh+pBxUFROpX+TU++hxhZQ==
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/object.assign/-/object.assign-4.1.5.tgz#3a833f9ab7fdb80fc9e8d2300c803d216d8fdbb0"
+  integrity sha512-byy+U7gp+FVwmyzKPYhW2h5l3crpmGsxl7X2s8y43IgxvG4g3QZ6CffDtsNQy1WsmZpQbO+ybo0AlW7TY6DcBQ==
   dependencies:
-    call-bind "^1.0.2"
-    define-properties "^1.1.4"
+    call-bind "^1.0.5"
+    define-properties "^1.2.1"
     has-symbols "^1.0.3"
     object-keys "^1.1.1"
 
@@ -2265,9 +2265,9 @@ typed-array-length@^1.0.4:
     is-typed-array "^1.1.9"
 
 typescript@^5.2.2:
-  version "5.3.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.3.2.tgz#00d1c7c1c46928c5845c1ee8d0cc2791031d4c43"
-  integrity sha512-6l+RyNy7oAHDfxC4FzSJcz9vnjTKxrLpDG5M2Vu4SHRVNg6xzqZp6LYSR9zjqQTu8DU/f5xwxUdADOkbrIX2gQ==
+  version "5.3.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.3.3.tgz#b3ce6ba258e72e6305ba66f5c9b452aaee3ffe37"
+  integrity sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==
 
 unbox-primitive@^1.0.2:
   version "1.0.2"

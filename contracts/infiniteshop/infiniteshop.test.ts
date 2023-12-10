@@ -14,13 +14,14 @@ import {
   UpdateAuth,
   assertRowsContain,
   Asset,
+  sleep,
 } from 'lamington';
 import * as chai from 'chai';
 
 import { Infiniteshop } from './infiniteshop';
 import { EosioToken } from '../eosio.token/eosio.token';
 import { TokenSymbol } from '../../scripts/helpers';
-import { sleep } from 'lamington';
+// import { sleep } from 'lamington';
 
 const token_contract = 'token.savact';
 const token_symbol: TokenSymbol = { name: 'SAVACT', precision: 4 };
@@ -30,23 +31,39 @@ let myToken: EosioToken;
 
 let sender1: Account;
 let sender2: Account;
+let sender3: Account;
 
 describe('shop', async () => {
   before(async () => {
     await seedAccounts();
   });
 
-  // Add item
-  context('Add shop (a/13)', async () => {
-    let expirationDate: number;
+  // Add shop
+  context('Add shop (a/3)', async () => {
     let pgpKey: string;
     before(async () => {
-      expirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600;
       pgpKey =
         '-----BEGIN PUBLIC KEY-----\nabcdefghijklmnop\n-----END PUBLIC KEY-----';
     });
+    context('with wrong auth', async () => {
+      it('should fail a1', async () => {
+        await assertMissingAuthority(
+          shopContract.updateuser(
+            sender1.name,
+            [
+              { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
+              { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
+            ],
+            true,
+            pgpKey,
+            'I like to sell a lot',
+            { from: sender2 }
+          )
+        );
+      });
+    });
     context('with correct auth', async () => {
-      it('should succeed a1', async () => {
+      it('should succeed a2', async () => {
         await shopContract.updateuser(
           sender1.name,
           [
@@ -59,7 +76,7 @@ describe('shop', async () => {
           { from: sender1 }
         );
       });
-      it('should update users table a2', async () => {
+      it('should update users table a3', async () => {
         const { rows } = await shopContract.userTable();
         chai.expect(rows.length).equal(1, 'Wrong amount of entries');
         const seller = rows[0];
@@ -91,7 +108,16 @@ describe('shop', async () => {
         chai.expect(seller.pgp).equal(pgpKey, 'Wrong pgp key');
         chai.expect(seller.note).equal('I like to sell a lot', 'Wrong note');
       });
-      it('should succeed a3', async () => {
+    });
+  });
+  // Add item
+  context('Add item (b/11)', async () => {
+    let expirationDate: number;
+    before(async () => {
+      expirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600;
+    });
+    context('with correct auth', async () => {
+      it('should succeed b1', async () => {
         await shopContract.additem(
           sender1.name,
           'elektronics',
@@ -114,7 +140,7 @@ describe('shop', async () => {
           { from: sender1 }
         );
       });
-      it('should update items table a4', async () => {
+      it('should update items table b2', async () => {
         const { rows } = await shopContract.itemTable({ scope: 'elektronics' });
         chai.expect(rows.length).equal(1, 'Wrong amount of entries');
         const item = rows[0];
@@ -147,7 +173,7 @@ describe('shop', async () => {
       });
     });
     context('should fail with', async () => {
-      it('wrong auth a5', async () => {
+      it('wrong auth b3', async () => {
         await assertMissingAuthority(
           shopContract.additem(
             sender2.name,
@@ -169,7 +195,7 @@ describe('shop', async () => {
           )
         );
       });
-      it('no price a6', async () => {
+      it('no price b4', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
@@ -191,7 +217,7 @@ describe('shop', async () => {
           'Price cannot be zero'
         );
       });
-      it('too early expiration date a7', async () => {
+      it('too early expiration date b5', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
@@ -213,7 +239,7 @@ describe('shop', async () => {
           'Expiration date is too early'
         );
       });
-      it('too late expiration date a8', async () => {
+      it('too late expiration date b6', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
@@ -236,7 +262,7 @@ describe('shop', async () => {
           'Expiration date is too late'
         );
       });
-      it('too long title a9', async () => {
+      it('too long title b7', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
@@ -259,7 +285,7 @@ describe('shop', async () => {
           'Title is too long'
         );
       });
-      it('too short title a10', async () => {
+      it('too short title b8', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
@@ -282,7 +308,7 @@ describe('shop', async () => {
           'Title is too short'
         );
       });
-      it('invalid ship region a11', async () => {
+      it('invalid ship region b9', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
@@ -304,7 +330,7 @@ describe('shop', async () => {
           'Invalid ship region'
         );
       });
-      it('invalid option a12', async () => {
+      it('invalid option b10', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
@@ -326,7 +352,7 @@ describe('shop', async () => {
           'Invalid option'
         );
       });
-      it('only one option a13', async () => {
+      it('only one option b11', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
@@ -350,11 +376,272 @@ describe('shop', async () => {
       });
     });
   });
-
-  // TODO: Write test for removing a seller
-  // TODO: Write test for changing seller state (active/inactive, token)
-  // TODO: Write test for removing an item
-  // TODO: Write test for changing item state
+  // Remove an item
+  context('Remove item (c/4)', async () => {
+    before(async () => {});
+    context('with correct auth', async () => {
+      it('should fail with not existing id c1', async () => {
+        await assertEOSErrorIncludesMessage(
+          shopContract.removeitem(1, 'elektronics', { from: sender1 }),
+          'Item not found'
+        );
+      });
+      it('should fail to remove by anyone if it is still not expired c2', async () => {
+        await assertEOSErrorIncludesMessage(
+          shopContract.removeitem(0, 'elektronics', { from: sender2 }),
+          'Is not expired yet'
+        );
+      });
+      it('should succeed c3', async () => {
+        await shopContract.removeitem(0, 'elektronics', { from: sender1 });
+      });
+      it('should update items table c4', async () => {
+        const { rows } = await shopContract.itemTable({ scope: 'elektronics' });
+        chai.expect(rows.length).equal(0, 'Wrong amount of entries');
+      });
+    });
+  });
+  // Update a seller
+  context('Update seller (d/3)', async () => {
+    let expirationDate: number;
+    let pgpKey: string;
+    let newPgpKey: string;
+    before(async () => {
+      expirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600;
+      pgpKey =
+        '-----BEGIN PUBLIC KEY-----\nabcdefghijklmnop\n-----END PUBLIC KEY-----';
+      newPgpKey =
+        '-----BEGIN PUBLIC KEY-----\nhijklmnop\n-----END PUBLIC KEY-----';
+    });
+    context('prepare', async () => {
+      it('should succeed to add another user d1', async () => {
+        await shopContract.updateuser(
+          sender2.name,
+          [
+            { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
+            { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
+          ],
+          true,
+          pgpKey,
+          'I like to sell a lot',
+          { from: sender2 }
+        );
+      });
+    });
+    context('with wrong auth', async () => {
+      it('should fail d2', async () => {
+        await assertMissingAuthority(
+          shopContract.updateuser(
+            sender2.name,
+            [{ sym: '4,EOS', contr: 'eosio.token', chain: 'eos' }],
+            false,
+            newPgpKey,
+            'I do not like to sell',
+            { from: sender1 }
+          )
+        );
+      });
+    });
+    context('with correct auth', async () => {
+      it('should succeed d3', async () => {
+        await shopContract.updateuser(
+          sender2.name,
+          [{ sym: '4,EOS', contr: 'eosio.token', chain: 'eos' }],
+          false,
+          newPgpKey,
+          'I do not like to sell',
+          { from: sender2 }
+        );
+      });
+    });
+  });
+  // Delete a seller
+  context('Delete seller (e/6)', async () => {
+    let expirationDate: number;
+    before(async () => {
+      expirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600;
+    });
+    context('prepare', async () => {
+      it('should succeed to add an item e1', async () => {
+        await shopContract.additem(
+          sender2.name,
+          'elektronics',
+          'Arduino Uno',
+          ['https://cdn.quasar.dev/img/parallax1.jpg'],
+          123,
+          3 * 24 * 3600,
+          'eu',
+          'de',
+          [{ t: 4 * 24 * 3600, p: 140, rs: 'nl' }],
+          ['Green', 'Blue', 'Red'],
+          'Cool arduino for your projects',
+          'I send without tracking',
+          true,
+          expirationDate,
+          { from: sender2 }
+        );
+      });
+      it('should update items table e2', async () => {
+        const { rows } = await shopContract.itemTable({ scope: 'elektronics' });
+        chai.expect(rows.length).equal(1, 'Wrong amount of entries');
+      });
+    });
+    context('with wrong auth', async () => {
+      it('should fail e3', async () => {
+        await assertMissingAuthority(
+          shopContract.deleteuser(sender2.name, { from: sender1 })
+        );
+      });
+    });
+    context('with correct auth', async () => {
+      it('should succeed e4', async () => {
+        await shopContract.deleteuser(sender2.name, { from: sender2 });
+      });
+      it('should update users table e5', async () => {
+        const { rows } = await shopContract.userTable();
+        chai.expect(rows.length).equal(1, 'Wrong amount of entries left');
+        const seller = rows[0];
+        chai.expect(seller.user).equal(sender1.name, 'Wrong seller name left');
+      });
+      it('should delete entry of this user also on items table e6', async () => {
+        const { rows } = await shopContract.itemTable({ scope: 'elektronics' });
+        chai.expect(rows.length).equal(0, 'Wrong amount of entries');
+      });
+    });
+  });
+  // Change item state
+  context('Change item state (f/5)', async () => {
+    let expirationDate: number;
+    let newExpirationDate: number;
+    before(async () => {
+      expirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600 - 10;
+      newExpirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600;
+    });
+    context('prepare', async () => {
+      it('should succeed to add an item f1', async () => {
+        await shopContract.additem(
+          sender1.name,
+          'elektronics',
+          'Arduino Uno',
+          ['https://cdn.quasar.dev/img/parallax1.jpg'],
+          123,
+          3 * 24 * 3600,
+          'eu',
+          'de',
+          [{ t: 4 * 24 * 3600, p: 140, rs: 'nl' }],
+          ['Green', 'Blue', 'Red'],
+          'Cool arduino for your projects',
+          'I send without tracking',
+          true,
+          expirationDate,
+          { from: sender1 }
+        );
+      });
+      it('should update items table f2', async () => {
+        const { rows } = await shopContract.itemTable({ scope: 'elektronics' });
+        chai.expect(rows.length).equal(1, 'Wrong amount of entries');
+      });
+    });
+    context('with wrong auth', async () => {
+      it('should fail f3', async () => {
+        await assertMissingAuthority(
+          shopContract.itemstate(0, 'elektronics', false, newExpirationDate, {
+            from: sender2,
+          })
+        );
+      });
+    });
+    context('with correct auth', async () => {
+      it('should succeed f4', async () => {
+        await shopContract.itemstate(
+          0,
+          'elektronics',
+          false,
+          newExpirationDate,
+          {
+            from: sender1,
+          }
+        );
+      });
+      it('should update items table f5', async () => {
+        const { rows } = await shopContract.itemTable({ scope: 'elektronics' });
+        chai.expect(rows.length).equal(1, 'Wrong amount of entries');
+        const item = rows[0];
+        chai.expect(item.available).equal(false, 'Wrong available state');
+        chai
+          .expect(item.expired)
+          .equal(newExpirationDate, 'Wrong expiration date');
+      });
+    });
+  });
+  // Ban a seller
+  context('Ban a seller (g/4)', async () => {
+    context('with wrong auth', async () => {
+      it('of other user should fail g1', async () => {
+        await assertMissingAuthority(
+          shopContract.ban(sender1.name, true, { from: sender2 })
+        );
+      });
+      it('of same user should fail g2', async () => {
+        await assertMissingAuthority(
+          shopContract.ban(sender1.name, true, { from: sender1 })
+        );
+      });
+    });
+    context('with correct auth', async () => {
+      it('of contract account should succeed g3', async () => {
+        await shopContract.ban(sender1.name, true, {
+          from: shopContract.account,
+        });
+      });
+      it('should update users table g4', async () => {
+        const { rows } = await shopContract.userTable();
+        chai.expect(rows.length).equal(1, 'Wrong amount of entries');
+        const seller = rows[0];
+        chai.expect(seller.banned).equal(true, 'Wrong banned state');
+      });
+    });
+  });
+  // Unban a seller
+  context('Unban a seller (h/4)', async () => {
+    context('with wrong auth', async () => {
+      it('of other user should fail h1', async () => {
+        await assertMissingAuthority(
+          shopContract.ban(sender1.name, false, { from: sender2 })
+        );
+      });
+      it('of same user should fail h2', async () => {
+        await assertMissingAuthority(
+          shopContract.ban(sender1.name, false, { from: sender1 })
+        );
+      });
+    });
+    context('with correct auth', async () => {
+      it('of contract account should succeed h3', async () => {
+        await shopContract.ban(sender1.name, false, {
+          from: shopContract.account,
+        });
+      });
+      it('should update users table h4', async () => {
+        const { rows } = await shopContract.userTable();
+        chai.expect(rows.length).equal(1, 'Wrong amount of entries');
+        const seller = rows[0];
+        chai.expect(seller.banned).equal(false, 'Wrong banned state');
+      });
+    });
+  });
+  // Remove expired items
+  context('Remove expired items (i/2)', async () => {
+    context('with no change', async () => {
+      it('should succeed in any case i1', async () => {
+        await shopContract.rmexpired('elektronics', { from: sender3 });
+      });
+      it('should not update items table i1', async () => {
+        const { rows } = await shopContract.itemTable({ scope: 'elektronics' });
+        chai.expect(rows.length).equal(1, 'Wrong amount of entries');
+      });
+    });
+  });
 });
 
 async function seedAccounts() {
@@ -367,8 +654,13 @@ async function seedAccounts() {
     'contracts/eosio.token/eosio.token',
     token_contract
   );
-  sender1 = await AccountManager.createAccount('sender1');
-  sender2 = await AccountManager.createAccount('sender2');
+  sender1 = await AccountManager.createAccount('user.zero', {
+    privateKey: '5KUbBzUD3kDRSQ4riyCNqJePG7kGZqRdQUXN2z8WKaZXMWDTe6e',
+  });
+  sender2 = await AccountManager.createAccount('user.one', {
+    privateKey: '5K4MTxjPbRhDJNsRf5VRmapmrLR67cs1ZpWmsT8vsFMgxA2k59q',
+  });
+  sender3 = await AccountManager.createAccount('user.two');
 
   await issueTokens();
   await updateAuths();

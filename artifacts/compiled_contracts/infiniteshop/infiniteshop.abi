@@ -256,6 +256,10 @@
                     "type": "name"
                 },
                 {
+                    "name": "contact",
+                    "type": "string[]"
+                },
+                {
                     "name": "allowed",
                     "type": "tokenSymbol[]"
                 },
@@ -280,6 +284,10 @@
                 {
                     "name": "user",
                     "type": "name"
+                },
+                {
+                    "name": "contact",
+                    "type": "string[]"
                 },
                 {
                     "name": "allowed",

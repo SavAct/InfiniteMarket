@@ -131,3 +131,6 @@ dist
 
 # VS Code workspace
 .code-workspace
+
+# Contract compiled dev contracts
+IS_DEV/

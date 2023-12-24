@@ -57,6 +57,7 @@ namespace savactshop {
 
     TABLE userTable{
       name user;
+      vector<string> contact;
       vector<tokenSymbol> allowed;
       bool active;
       uint32_t lastUpdate;
@@ -125,12 +126,13 @@ namespace savactshop {
      * @brief Add or update properties of a user
      *
      * @param user User account name
+     * @param contact Contact addresses like the email or Telegram contact address. Can be empty if already defined
      * @param allowed Allowed token symbols. Can be empty if already defined
      * @param active User is active
      * @param pgp PGP public key. Can be empty if already defined
      * @param note Note of this user. Can be empty if already defined
      */
-    ACTION updateuser(const name& user, const vector<tokenSymbol>& allowed, const bool active, const string& pgp, const string& note) {
+    ACTION updateuser(const name& user, const vector<string>& contact, const vector<tokenSymbol>& allowed, const bool active, const string& pgp, const string& note) {
       require_auth(user);
       users_table _users(get_self(), get_self().value);
       auto itr = _users.find(user.value);
@@ -146,8 +148,11 @@ namespace savactshop {
           if (pgp.length() > 0) {
             s.pgp = pgp;
           }
-          if (note.length() > 0) {
+          if (note.length() >= 0) {
             s.note = note;
+          }
+          if (contact.size() > 0) {
+            s.contact = contact;
           }
           });
       }
@@ -155,6 +160,7 @@ namespace savactshop {
         check(hasNewTokens, "No accepted tokens defined");
         _users.emplace(get_self(), [&](auto& s) {
           s.user = user;
+          s.contact = contact;
           s.allowed = allowed;
           s.active = active;
           s.lastUpdate = eosio::current_time_point().sec_since_epoch();

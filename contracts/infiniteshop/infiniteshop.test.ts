@@ -18,7 +18,7 @@ import {
 } from 'lamington';
 import * as chai from 'chai';
 
-import { Infiniteshop } from './infiniteshop';
+import { Infiniteshop, InfiniteshopUserTable } from './infiniteshop';
 import { EosioToken } from '../eosio.token/eosio.token';
 import { TokenSymbol } from '../../scripts/helpers';
 // import { sleep } from 'lamington';
@@ -50,6 +50,7 @@ describe('shop', async () => {
         await assertMissingAuthority(
           shopContract.updateuser(
             sender1.name,
+            ['user1@ininite.shop', 't.me/infiniteshop'],
             [
               { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
               { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
@@ -66,6 +67,7 @@ describe('shop', async () => {
       it('should succeed a2', async () => {
         await shopContract.updateuser(
           sender1.name,
+          ['user1@ininite.shop', 't.me/infiniteshop'],
           [
             { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
             { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
@@ -81,15 +83,21 @@ describe('shop', async () => {
         chai.expect(rows.length).equal(1, 'Wrong amount of entries');
         const seller = rows[0];
         chai.expect(seller.user).equal(sender1.name, 'Wrong seller name');
+
+        // Check contact
+        chai.expect(seller.contact.length).equal(2, 'Wrong contact amount');
+        chai.expect(seller.contact[0]).equal('user1@ininite.shop');
+        chai.expect(seller.contact[1]).equal('t.me/infiniteshop');
+
         chai.expect(seller.active).equal(true, 'Wrong active state');
         chai.expect(seller.banned).equal(false, 'Wrong banned state');
         chai.expect(seller.items.length).equal(0, 'Wrong item count');
         chai
           .expect(seller.lastUpdate)
-          .below(Math.floor(Date.now() / 1000) + 1, 'Wrong token count');
+          .below(Math.floor(Date.now() / 1000) + 1, 'Wrong last update');
         chai
           .expect(seller.lastUpdate)
-          .greaterThan(Math.floor(Date.now() / 1000) - 60, 'Wrong token count');
+          .greaterThan(Math.floor(Date.now() / 1000) - 60, 'Wrong last update');
         chai.expect(seller.allowed.length).equal(2, 'Wrong token number');
 
         chai.expect(seller.allowed[0].sym).equal('4,EOS', 'Wrong token symbol');
@@ -402,7 +410,7 @@ describe('shop', async () => {
     });
   });
   // Update a seller
-  context('Update seller (d/3)', async () => {
+  context('Update seller (d/4)', async () => {
     let expirationDate: number;
     let pgpKey: string;
     let newPgpKey: string;
@@ -417,6 +425,7 @@ describe('shop', async () => {
       it('should succeed to add another user d1', async () => {
         await shopContract.updateuser(
           sender2.name,
+          ['user2@ininite.shop', 't.me/infiniteshop2'],
           [
             { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
             { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
@@ -433,6 +442,7 @@ describe('shop', async () => {
         await assertMissingAuthority(
           shopContract.updateuser(
             sender2.name,
+            ['user2@ininite.shop', 't.me/infiniteseller'],
             [{ sym: '4,EOS', contr: 'eosio.token', chain: 'eos' }],
             false,
             newPgpKey,
@@ -446,12 +456,56 @@ describe('shop', async () => {
       it('should succeed d3', async () => {
         await shopContract.updateuser(
           sender2.name,
+          ['user2@ininite.shop', 't.me/infiniteseller'],
           [{ sym: '4,EOS', contr: 'eosio.token', chain: 'eos' }],
           false,
           newPgpKey,
           'I do not like to sell',
           { from: sender2 }
         );
+      });
+
+      it('should update users table d4', async () => {
+        const { rows } = await shopContract.userTable();
+
+        // Find seller entry
+        let seller: InfiniteshopUserTable | undefined = undefined;
+        for (let i = 0; i < rows.length; i++) {
+          if (rows[i].user == sender2.name) {
+            seller = rows[i];
+            break;
+          }
+        }
+        chai.expect(seller === undefined).equal(false, 'Seller not found');
+        if (seller === undefined) return;
+
+        // Check contact
+        chai.expect(seller.contact.length).equal(2, 'Wrong contact amount');
+        chai.expect(seller.contact[0]).equal('user2@ininite.shop');
+        chai.expect(seller.contact[1]).equal('t.me/infiniteseller');
+
+        chai.expect(seller.active).equal(false, 'Wrong active state');
+        chai.expect(seller.banned).equal(false, 'Wrong banned state');
+        chai.expect(seller.items.length).equal(0, 'Wrong item count');
+
+        // Check last update
+        chai
+          .expect(seller.lastUpdate)
+          .below(Math.floor(Date.now() / 1000) + 1, 'Wrong last update');
+        chai
+          .expect(seller.lastUpdate)
+          .greaterThan(Math.floor(Date.now() / 1000) - 60, 'Wrong last update');
+
+        // Check allowed token
+        chai.expect(seller.allowed.length).equal(1, 'Wrong token number');
+        chai.expect(seller.allowed[0].sym).equal('4,EOS', 'Wrong token symbol');
+        chai
+          .expect(seller.allowed[0].contr)
+          .equal('eosio.token', 'Wrong token contract');
+        chai.expect(seller.allowed[0].chain).equal('eos', 'Wrong token chain');
+
+        chai.expect(seller.pgp).equal(newPgpKey, 'Wrong pgp key');
+        chai.expect(seller.note).equal('I do not like to sell', 'Wrong note');
       });
     });
   });
@@ -646,12 +700,13 @@ describe('shop', async () => {
 
 async function seedAccounts() {
   shopContract = await ContractDeployer.deployWithName<Infiniteshop>(
-    'contracts/infiniteshop/infiniteshop',
+    'compiled_contracts/infiniteshop/infiniteshop',
     'infiniteshop'
   );
+  console.log('shopContract', shopContract.account.name);
 
   myToken = await ContractDeployer.deployWithName<EosioToken>(
-    'contracts/eosio.token/eosio.token',
+    'compiled_contracts/eosio.token/eosio.token',
     token_contract
   );
   sender1 = await AccountManager.createAccount('user.zero', {

@@ -21,6 +21,11 @@ import * as chai from 'chai';
 import { Infiniteshop, InfiniteshopUserTable } from './infiniteshop';
 import { EosioToken } from '../eosio.token/eosio.token';
 import { TokenSymbol } from '../../scripts/helpers';
+import {
+  categories,
+  categoryBigInt,
+  categoryHex,
+} from '../../scripts/categories';
 // import { sleep } from 'lamington';
 
 const token_contract = 'token.savact';
@@ -119,22 +124,27 @@ describe('shop', async () => {
     });
   });
   // Add item
-  context('Add item (b/11)', async () => {
+  context('Add item (b/13)', async () => {
     let expirationDate: number;
+    let category: bigint;
     before(async () => {
       expirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600;
+      category = categoryBigInt(1, 0); // "Electronics"/"Computers, Tablets & Network Hardware"
     });
     context('with correct auth', async () => {
       it('should succeed b1', async () => {
         await shopContract.additem(
           sender1.name,
-          'elektronics',
+          category,
           'Arduino Mega 2560',
           [
             'https://cdn.quasar.dev/img/parallax1.jpg',
             'https://cdn.quasar.dev/img/parallax2.jpg',
           ],
-          123,
+          [
+            { p: 123, pcs: 1 },
+            { p: 200, pcs: 2 },
+          ],
 
           3 * 24 * 3600,
           'eu',
@@ -149,7 +159,9 @@ describe('shop', async () => {
         );
       });
       it('should update items table b2', async () => {
-        const { rows } = await shopContract.itemTable({ scope: 'elektronics' });
+        const { rows } = await shopContract.itemTable({
+          scope: categoryBigInt(1, 0).toString(),
+        });
         chai.expect(rows.length).equal(1, 'Wrong amount of entries');
         const item = rows[0];
         chai.expect(item.id).equal(0, 'Wrong id');
@@ -169,7 +181,10 @@ describe('shop', async () => {
             'https://cdn.quasar.dev/img/parallax2.jpg',
             'Wrong second image'
           );
-        chai.expect(item.price).equal(123, 'Wrong price');
+        chai.expect(item.pp[0].p).equal(123, 'Wrong price');
+        chai.expect(item.pp[0].pcs).equal(1, 'Wrong pieces');
+        chai.expect(item.pp[1].p).equal(200, 'Wrong price');
+        chai.expect(item.pp[1].pcs).equal(2, 'Wrong pieces');
         chai
           .expect(item.expired)
           .equal(expirationDate, 'Wrong expiration date');
@@ -185,10 +200,10 @@ describe('shop', async () => {
         await assertMissingAuthority(
           shopContract.additem(
             sender2.name,
-            'elektronics',
+            category,
             'Arduino Uno',
             ['https://cdn.quasar.dev/img/parallax1.jpg'],
-            123,
+            [{ p: 123, pcs: 1 }],
 
             3 * 24 * 3600,
             'eu',
@@ -207,10 +222,32 @@ describe('shop', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
-            'elektronics',
+            category,
             'Arduino Uno',
             ['https://cdn.quasar.dev/img/parallax1.jpg'],
-            0,
+            [],
+            3 * 24 * 3600,
+            'eu',
+            'de',
+            [{ t: 4 * 24 * 3600, p: 140, rs: 'nl' }],
+            ['Green', 'Blue', 'Red'],
+            'Cool arduino for your projects',
+            'I send without tracking',
+            true,
+            Math.floor(Date.now() / 1000) + 30 * 24 * 3600,
+            { from: sender1 }
+          ),
+          'No prices defined'
+        );
+      });
+      it('no price b5', async () => {
+        await assertEOSErrorIncludesMessage(
+          shopContract.additem(
+            sender1.name,
+            category,
+            'Arduino Uno',
+            ['https://cdn.quasar.dev/img/parallax1.jpg'],
+            [{ p: 0, pcs: 1 }],
             3 * 24 * 3600,
             'eu',
             'de',
@@ -225,14 +262,36 @@ describe('shop', async () => {
           'Price cannot be zero'
         );
       });
-      it('too early expiration date b5', async () => {
+      it('no price b6', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
-            'elektronics',
+            category,
             'Arduino Uno',
             ['https://cdn.quasar.dev/img/parallax1.jpg'],
-            1,
+            [{ p: 1, pcs: 0 }],
+            3 * 24 * 3600,
+            'eu',
+            'de',
+            [{ t: 4 * 24 * 3600, p: 140, rs: 'nl' }],
+            ['Green', 'Blue', 'Red'],
+            'Cool arduino for your projects',
+            'I send without tracking',
+            true,
+            Math.floor(Date.now() / 1000) + 30 * 24 * 3600,
+            { from: sender1 }
+          ),
+          'Pieces cannot be zero'
+        );
+      });
+      it('too early expiration date b7', async () => {
+        await assertEOSErrorIncludesMessage(
+          shopContract.additem(
+            sender1.name,
+            category,
+            'Arduino Uno',
+            ['https://cdn.quasar.dev/img/parallax1.jpg'],
+            [{ p: 2, pcs: 1 }],
             3 * 24 * 3600,
             'eu',
             'de',
@@ -247,14 +306,14 @@ describe('shop', async () => {
           'Expiration date is too early'
         );
       });
-      it('too late expiration date b6', async () => {
+      it('too late expiration date b8', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
-            'elektronics',
+            category,
             'Arduino Uno',
             ['https://cdn.quasar.dev/img/parallax1.jpg'],
-            1,
+            [{ p: 2, pcs: 1 }],
 
             3 * 24 * 3600,
             'eu',
@@ -270,14 +329,14 @@ describe('shop', async () => {
           'Expiration date is too late'
         );
       });
-      it('too long title b7', async () => {
+      it('too long title b9', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
-            'elektronics',
+            category,
             'Arduino Uno Arduino Uno Arduino Uno Arduino Uno Arduino Uno Arduino Uno Arduino Uno Arduino Uno Arduino Uno',
             ['https://cdn.quasar.dev/img/parallax1.jpg'],
-            1,
+            [{ p: 2, pcs: 1 }],
 
             3 * 24 * 3600,
             'eu',
@@ -293,14 +352,14 @@ describe('shop', async () => {
           'Title is too long'
         );
       });
-      it('too short title b8', async () => {
+      it('too short title b10', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
-            'elektronics',
+            category,
             'A',
             ['https://cdn.quasar.dev/img/parallax1.jpg'],
-            1,
+            [{ p: 2, pcs: 1 }],
 
             3 * 24 * 3600,
             'eu',
@@ -316,14 +375,14 @@ describe('shop', async () => {
           'Title is too short'
         );
       });
-      it('invalid ship region b9', async () => {
+      it('invalid ship region b11', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
-            'elektronics',
+            category,
             'Arduino Uno',
             ['https://cdn.quasar.dev/img/parallax1.jpg'],
-            1,
+            [{ p: 2, pcs: 1 }],
             3 * 24 * 3600,
             'eu',
             'de',
@@ -338,14 +397,14 @@ describe('shop', async () => {
           'Invalid ship region'
         );
       });
-      it('invalid option b10', async () => {
+      it('invalid option b12', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
-            'elektronics',
+            category,
             'Arduino Uno',
             ['https://cdn.quasar.dev/img/parallax1.jpg'],
-            1,
+            [{ p: 2, pcs: 1 }],
             3 * 24 * 3600,
             'eu',
             'de',
@@ -360,14 +419,14 @@ describe('shop', async () => {
           'Invalid option'
         );
       });
-      it('only one option b11', async () => {
+      it('only one option b13', async () => {
         await assertEOSErrorIncludesMessage(
           shopContract.additem(
             sender1.name,
-            'elektronics',
+            category,
             'Arduino Uno',
             ['https://cdn.quasar.dev/img/parallax1.jpg'],
-            1,
+            [{ p: 2, pcs: 1 }],
             3 * 24 * 3600,
             'eu',
             'de',
@@ -386,25 +445,30 @@ describe('shop', async () => {
   });
   // Remove an item
   context('Remove item (c/4)', async () => {
-    before(async () => {});
+    let category: bigint;
+    before(async () => {
+      category = categoryBigInt(1, 0); // "Electronics"/"Computers, Tablets & Network Hardware"
+    });
     context('with correct auth', async () => {
       it('should fail with not existing id c1', async () => {
         await assertEOSErrorIncludesMessage(
-          shopContract.removeitem(1, 'elektronics', { from: sender1 }),
+          shopContract.removeitem(1, category, { from: sender1 }),
           'Item not found'
         );
       });
       it('should fail to remove by anyone if it is still not expired c2', async () => {
         await assertEOSErrorIncludesMessage(
-          shopContract.removeitem(0, 'elektronics', { from: sender2 }),
+          shopContract.removeitem(0, category, { from: sender2 }),
           'Is not expired yet'
         );
       });
       it('should succeed c3', async () => {
-        await shopContract.removeitem(0, 'elektronics', { from: sender1 });
+        await shopContract.removeitem(0, category, { from: sender1 });
       });
       it('should update items table c4', async () => {
-        const { rows } = await shopContract.itemTable({ scope: 'elektronics' });
+        const { rows } = await shopContract.itemTable({
+          scope: category.toString(),
+        });
         chai.expect(rows.length).equal(0, 'Wrong amount of entries');
       });
     });
@@ -512,17 +576,19 @@ describe('shop', async () => {
   // Delete a seller
   context('Delete seller (e/6)', async () => {
     let expirationDate: number;
+    let category: bigint;
     before(async () => {
       expirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600;
+      category = categoryBigInt(1, 0); // "Electronics"/"Computers, Tablets & Network Hardware"
     });
     context('prepare', async () => {
       it('should succeed to add an item e1', async () => {
         await shopContract.additem(
           sender2.name,
-          'elektronics',
+          category,
           'Arduino Uno',
           ['https://cdn.quasar.dev/img/parallax1.jpg'],
-          123,
+          [{ p: 123, pcs: 1 }],
           3 * 24 * 3600,
           'eu',
           'de',
@@ -536,7 +602,9 @@ describe('shop', async () => {
         );
       });
       it('should update items table e2', async () => {
-        const { rows } = await shopContract.itemTable({ scope: 'elektronics' });
+        const { rows } = await shopContract.itemTable({
+          scope: category.toString(),
+        });
         chai.expect(rows.length).equal(1, 'Wrong amount of entries');
       });
     });
@@ -558,7 +626,9 @@ describe('shop', async () => {
         chai.expect(seller.user).equal(sender1.name, 'Wrong seller name left');
       });
       it('should delete entry of this user also on items table e6', async () => {
-        const { rows } = await shopContract.itemTable({ scope: 'elektronics' });
+        const { rows } = await shopContract.itemTable({
+          scope: category.toString(),
+        });
         chai.expect(rows.length).equal(0, 'Wrong amount of entries');
       });
     });
@@ -567,18 +637,20 @@ describe('shop', async () => {
   context('Change item state (f/5)', async () => {
     let expirationDate: number;
     let newExpirationDate: number;
+    let category: bigint;
     before(async () => {
       expirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600 - 10;
       newExpirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600;
+      category = categoryBigInt(1, 0); // "Electronics"/"Computers, Tablets & Network Hardware"
     });
     context('prepare', async () => {
       it('should succeed to add an item f1', async () => {
         await shopContract.additem(
           sender1.name,
-          'elektronics',
+          category,
           'Arduino Uno',
           ['https://cdn.quasar.dev/img/parallax1.jpg'],
-          123,
+          [{ p: 123, pcs: 1 }],
           3 * 24 * 3600,
           'eu',
           'de',
@@ -592,14 +664,16 @@ describe('shop', async () => {
         );
       });
       it('should update items table f2', async () => {
-        const { rows } = await shopContract.itemTable({ scope: 'elektronics' });
+        const { rows } = await shopContract.itemTable({
+          scope: category.toString(),
+        });
         chai.expect(rows.length).equal(1, 'Wrong amount of entries');
       });
     });
     context('with wrong auth', async () => {
       it('should fail f3', async () => {
         await assertMissingAuthority(
-          shopContract.itemstate(0, 'elektronics', false, newExpirationDate, {
+          shopContract.itemstate(0, category, false, newExpirationDate, {
             from: sender2,
           })
         );
@@ -607,18 +681,14 @@ describe('shop', async () => {
     });
     context('with correct auth', async () => {
       it('should succeed f4', async () => {
-        await shopContract.itemstate(
-          0,
-          'elektronics',
-          false,
-          newExpirationDate,
-          {
-            from: sender1,
-          }
-        );
+        await shopContract.itemstate(0, category, false, newExpirationDate, {
+          from: sender1,
+        });
       });
       it('should update items table f5', async () => {
-        const { rows } = await shopContract.itemTable({ scope: 'elektronics' });
+        const { rows } = await shopContract.itemTable({
+          scope: category.toString(),
+        });
         chai.expect(rows.length).equal(1, 'Wrong amount of entries');
         const item = rows[0];
         chai.expect(item.available).equal(false, 'Wrong available state');
@@ -687,11 +757,17 @@ describe('shop', async () => {
   // Remove expired items
   context('Remove expired items (i/2)', async () => {
     context('with no change', async () => {
+      let category: bigint;
+      before(async () => {
+        category = categoryBigInt(1, 0); // "Electronics"/"Computers, Tablets & Network Hardware"
+      });
       it('should succeed in any case i1', async () => {
-        await shopContract.rmexpired('elektronics', { from: sender3 });
+        await shopContract.rmexpired(category, { from: sender3 });
       });
       it('should not update items table i1', async () => {
-        const { rows } = await shopContract.itemTable({ scope: 'elektronics' });
+        const { rows } = await shopContract.itemTable({
+          scope: category.toString(),
+        });
         chai.expect(rows.length).equal(1, 'Wrong amount of entries');
       });
     });
@@ -791,4 +867,7 @@ async function issueTokens() {
     'inital balance',
     { from: myToken.account }
   );
+}
+function categoriesIndexByBigInt(arg0: any): string | number | bigint {
+  throw new Error('Function not implemented.');
 }

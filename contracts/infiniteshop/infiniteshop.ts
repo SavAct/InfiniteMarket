@@ -9,10 +9,10 @@ import { Account, Contract, GetTableRowsOptions, ExtendedAsset, ExtendedSymbol, 
 // Table row types
 export interface InfiniteshopAdditem {
 	seller: string;
-	category: string;
+	category: number | string | bigint;
 	title: string;
 	imgs: Array<string>;
-	price: number | string | bigint;
+	pp: Array<InfiniteshopPiecesPrice>;
 	prepT: number;
 	fromR: string;
 	excl: string;
@@ -25,17 +25,17 @@ export interface InfiniteshopAdditem {
 }
 
 export interface InfiniteshopBan {
-	seller: string;
+	user: string;
 	ban: boolean;
 }
 
 export interface InfiniteshopDeleteuser {
-	seller: string;
+	user: string;
 }
 
 export interface InfiniteshopIdAndCategory {
 	id: number | string | bigint;
-	category: string;
+	category: number | string | bigint;
 }
 
 export interface InfiniteshopItemTable {
@@ -44,12 +44,12 @@ export interface InfiniteshopItemTable {
 	available: boolean;
 	title: string;
 	imgs: Array<string>;
-	price: number | string | bigint;
+	pp: Array<InfiniteshopPiecesPrice>;
 	prepT: number;
 	fromR: string;
 	shipTo: Array<InfiniteshopToRegion>;
 	excl: string;
-	options: Array<string>;
+	opts: Array<string>;
 	descr: string;
 	note: string;
 	expired: number;
@@ -57,18 +57,23 @@ export interface InfiniteshopItemTable {
 
 export interface InfiniteshopItemstate {
 	id: number | string | bigint;
-	category: string;
+	category: number | string | bigint;
 	available: boolean;
 	expired: number;
 }
 
+export interface InfiniteshopPiecesPrice {
+	p: number | string | bigint;
+	pcs: number;
+}
+
 export interface InfiniteshopRemoveitem {
 	id: number | string | bigint;
-	category: string;
+	category: number | string | bigint;
 }
 
 export interface InfiniteshopRmexpired {
-	category: string;
+	category: number | string | bigint;
 }
 
 export interface InfiniteshopToRegion {
@@ -110,20 +115,20 @@ export interface InfiniteshopUserTable {
 
 export interface Infiniteshop extends Contract {
 	// Actions
-	additem(seller: string, category: string, title: string, imgs: Array<string>, price: number | string | bigint, prepT: number, fromR: string, excl: string, shipTo: Array<InfiniteshopToRegion>, opts: Array<string>, descr: string, note: string, available: boolean, expired: number, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
-	ban(seller: string, ban: boolean, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
-	deleteuser(seller: string, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
-	itemstate(id: number | string | bigint, category: string, available: boolean, expired: number, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
-	removeitem(id: number | string | bigint, category: string, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
-	rmexpired(category: string, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
+	additem(seller: string, category: number | string | bigint, title: string, imgs: Array<string>, pp: Array<InfiniteshopPiecesPrice>, prepT: number, fromR: string, excl: string, shipTo: Array<InfiniteshopToRegion>, opts: Array<string>, descr: string, note: string, available: boolean, expired: number, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
+	ban(user: string, ban: boolean, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
+	deleteuser(user: string, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
+	itemstate(id: number | string | bigint, category: number | string | bigint, available: boolean, expired: number, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
+	removeitem(id: number | string | bigint, category: number | string | bigint, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
+	rmexpired(category: number | string | bigint, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
 	updateuser(user: string, contact: Array<string>, allowed: Array<InfiniteshopTokenSymbol>, active: boolean, pgp: string, note: string, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
 	// Actions with object params. (This is WIP and not ready for use)
-	additem_object_params(params: {seller: string, category: string, title: string, imgs: Array<string>, price: number | string | bigint, prepT: number, fromR: string, excl: string, shipTo: Array<InfiniteshopToRegion>, opts: Array<string>, descr: string, note: string, available: boolean, expired: number}, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
-	ban_object_params(params: {seller: string, ban: boolean}, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
-	deleteuser_object_params(params: {seller: string}, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
-	itemstate_object_params(params: {id: number | string | bigint, category: string, available: boolean, expired: number}, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
-	removeitem_object_params(params: {id: number | string | bigint, category: string}, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
-	rmexpired_object_params(params: {category: string}, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
+	additem_object_params(params: {seller: string, category: number | string | bigint, title: string, imgs: Array<string>, pp: Array<InfiniteshopPiecesPrice>, prepT: number, fromR: string, excl: string, shipTo: Array<InfiniteshopToRegion>, opts: Array<string>, descr: string, note: string, available: boolean, expired: number}, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
+	ban_object_params(params: {user: string, ban: boolean}, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
+	deleteuser_object_params(params: {user: string}, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
+	itemstate_object_params(params: {id: number | string | bigint, category: number | string | bigint, available: boolean, expired: number}, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
+	removeitem_object_params(params: {id: number | string | bigint, category: number | string | bigint}, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
+	rmexpired_object_params(params: {category: number | string | bigint}, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
 	updateuser_object_params(params: {user: string, contact: Array<string>, allowed: Array<InfiniteshopTokenSymbol>, active: boolean, pgp: string, note: string}, options?: { from?: Account, auths?: ActorPermission[] }): Promise<any>;
 	
 	// Tables

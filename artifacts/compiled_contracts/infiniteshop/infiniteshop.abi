@@ -13,7 +13,7 @@
                 },
                 {
                     "name": "category",
-                    "type": "name"
+                    "type": "uint64"
                 },
                 {
                     "name": "title",
@@ -24,8 +24,8 @@
                     "type": "string[]"
                 },
                 {
-                    "name": "price",
-                    "type": "uint64"
+                    "name": "pp",
+                    "type": "piecesPrice[]"
                 },
                 {
                     "name": "prepT",
@@ -70,7 +70,7 @@
             "base": "",
             "fields": [
                 {
-                    "name": "seller",
+                    "name": "user",
                     "type": "name"
                 },
                 {
@@ -84,7 +84,7 @@
             "base": "",
             "fields": [
                 {
-                    "name": "seller",
+                    "name": "user",
                     "type": "name"
                 }
             ]
@@ -99,7 +99,7 @@
                 },
                 {
                     "name": "category",
-                    "type": "name"
+                    "type": "uint64"
                 }
             ]
         },
@@ -128,8 +128,8 @@
                     "type": "string[]"
                 },
                 {
-                    "name": "price",
-                    "type": "uint64"
+                    "name": "pp",
+                    "type": "piecesPrice[]"
                 },
                 {
                     "name": "prepT",
@@ -148,7 +148,7 @@
                     "type": "string"
                 },
                 {
-                    "name": "options",
+                    "name": "opts",
                     "type": "string[]"
                 },
                 {
@@ -175,7 +175,7 @@
                 },
                 {
                     "name": "category",
-                    "type": "name"
+                    "type": "uint64"
                 },
                 {
                     "name": "available",
@@ -183,6 +183,20 @@
                 },
                 {
                     "name": "expired",
+                    "type": "uint32"
+                }
+            ]
+        },
+        {
+            "name": "piecesPrice",
+            "base": "",
+            "fields": [
+                {
+                    "name": "p",
+                    "type": "uint64"
+                },
+                {
+                    "name": "pcs",
                     "type": "uint32"
                 }
             ]
@@ -197,7 +211,7 @@
                 },
                 {
                     "name": "category",
-                    "type": "name"
+                    "type": "uint64"
                 }
             ]
         },
@@ -207,7 +221,7 @@
             "fields": [
                 {
                     "name": "category",
-                    "type": "name"
+                    "type": "uint64"
                 }
             ]
         },

@@ -129,7 +129,7 @@ describe('shop', async () => {
     let category: bigint;
     before(async () => {
       expirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600;
-      category = categoryBigInt(1, 0); // "Electronics"/"Computers, Tablets & Network Hardware"
+      category = categoryBigInt(2, 1); // "Electronics"/"Computers, Tablets & Network Hardware"
     });
     context('with correct auth', async () => {
       it('should succeed b1', async () => {
@@ -160,7 +160,7 @@ describe('shop', async () => {
       });
       it('should update items table b2', async () => {
         const { rows } = await shopContract.itemTable({
-          scope: categoryBigInt(1, 0).toString(),
+          scope: categoryBigInt(2, 1).toString(),
         });
         chai.expect(rows.length).equal(1, 'Wrong amount of entries');
         const item = rows[0];
@@ -447,7 +447,7 @@ describe('shop', async () => {
   context('Remove item (c/4)', async () => {
     let category: bigint;
     before(async () => {
-      category = categoryBigInt(1, 0); // "Electronics"/"Computers, Tablets & Network Hardware"
+      category = categoryBigInt(2, 1); // "Electronics"/"Computers, Tablets & Network Hardware"
     });
     context('with correct auth', async () => {
       it('should fail with not existing id c1', async () => {
@@ -579,7 +579,7 @@ describe('shop', async () => {
     let category: bigint;
     before(async () => {
       expirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600;
-      category = categoryBigInt(1, 0); // "Electronics"/"Computers, Tablets & Network Hardware"
+      category = categoryBigInt(2, 1); // "Electronics"/"Computers, Tablets & Network Hardware"
     });
     context('prepare', async () => {
       it('should succeed to add an item e1', async () => {
@@ -641,7 +641,7 @@ describe('shop', async () => {
     before(async () => {
       expirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600 - 10;
       newExpirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600;
-      category = categoryBigInt(1, 0); // "Electronics"/"Computers, Tablets & Network Hardware"
+      category = categoryBigInt(2, 1); // "Electronics"/"Computers, Tablets & Network Hardware"
     });
     context('prepare', async () => {
       it('should succeed to add an item f1', async () => {
@@ -759,7 +759,7 @@ describe('shop', async () => {
     context('with no change', async () => {
       let category: bigint;
       before(async () => {
-        category = categoryBigInt(1, 0); // "Electronics"/"Computers, Tablets & Network Hardware"
+        category = categoryBigInt(2, 1); // "Electronics"/"Computers, Tablets & Network Hardware"
       });
       it('should succeed in any case i1', async () => {
         await shopContract.rmexpired(category, { from: sender3 });

@@ -200,13 +200,23 @@ namespace savactshop
       check(title.length() <= 80, "Title is too long");
 
       check(pp.size() > 0, "No prices defined");
-      for (auto &p : pp)
+
+      // The first entry can only be zero for special settings
+      if (pp.size() == 1)
       {
-        check(p.p > 0, "Price cannot be zero");
-        check(p.pcs > 0, "Pieces cannot be zero");
+        check(pp[0].p > 0, "Price cannot be zero");
+        check(pp[0].pcs > 0, "Pieces cannot be zero");
+      }
+      else
+      {
+        for (auto p = pp.begin() + 1; p != pp.end(); ++p)
+        {
+          check(p->p > 0, "Price cannot be zero");
+          check(p->pcs > 0, "Pieces cannot be zero");
+        }
       }
 
-      check(descr.length() > 3, "Description is too short");
+      // check(descr.length() > 3, "Description is too short");
       check(shipTo.size() > 0, "No ship to any region");
       for (auto &r : shipTo)
       {

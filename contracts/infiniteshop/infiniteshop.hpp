@@ -209,14 +209,19 @@ namespace savactshop
       }
       else
       {
+        uint32_t smallestPcs = pp[0].pcs != 0 ? pp[0].pcs : pp[1].pcs;
+        uint32_t highestPcs = (pp.end() - 1)->pcs;
+        uint32_t maxPcs = pp[0].pcs == 0 && pp[0].p > 0 ? pp[0].p : UINT32_MAX;
+
         for (auto p = pp.begin() + 1; p != pp.end(); ++p)
         {
           check(p->p > 0, "Price cannot be zero");
           check(p->pcs > 0, "Pieces cannot be zero");
+          check(p->pcs >= smallestPcs || p->pcs <= highestPcs, "Piece options are not in order"); // Check only the min and max values because they are used in the interface
+          check(p->pcs <= maxPcs, "Piece number can not exceed the maximum");
         }
-      }
+            }
 
-      // check(descr.length() > 3, "Description is too short");
       check(shipTo.size() > 0, "No ship to any region");
       for (auto &r : shipTo)
       {

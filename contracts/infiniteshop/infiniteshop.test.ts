@@ -772,6 +772,127 @@ describe('shop', async () => {
       });
     });
   });
+  // Further item uploads for testing the interface
+  context('Further uploads (j/4)', async () => {
+    let expirationDate: number;
+    let pgpKey: string;
+    let category1: bigint, category2: bigint;
+    before(async () => {
+      expirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600;
+      pgpKey = `-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEZbWOvxYJKwYBBAHaRw8BAQdAaGO3MtWEHcZboFQEBBq3e9OFRRSUmkWT
+lpJJ4gyxDWPNAMKMBBAWCgA+BYJltY6/BAsJBwgJkAQsWyYV9XyIAxUICgQW
+AAIBAhkBApsDAh4BFiEEufjWFn9QEf1vyRGvBCxbJhX1fIgAACb3AQCcvkPc
+PkoLKCyamKQl9PL08B0Z7S+FZIA//Tb3ECZJZQEA0UGauRiIDPaeRJHltcH4
+RuylOloA5TnYZ6hIGXqhowHOOARltY6/EgorBgEEAZdVAQUBAQdAXfJqme/K
+cZlJ683A/ct/HaJDVOmF7Ln9op106tAnpHADAQgHwngEGBYKACoFgmW1jr8J
+kAQsWyYV9XyIApsMFiEEufjWFn9QEf1vyRGvBCxbJhX1fIgAAFnyAQDMoGAM
+vhlzIf6wxFzgd/JPnPxO/NKXmCLTwrLqrCG0pQEA2DgVahIDLgYJeXrkyu8W
+SfWmazEgA1Lfo1MvSI8WwAY=
+8TVb
+-----END PGP PUBLIC KEY BLOCK-----`;
+      category1 = categoryBigInt(2, 1); // "Electronics"/"Computers, Tablets & Network Hardware"
+
+      category2 = categoryBigInt(11, 1); // "Jewelry & Watches"/"Watches, Parts & Accessories"
+    });
+    context('add a user', async () => {
+      it('should succeed j1', async () => {
+        await shopContract.updateuser(
+          sender3.name,
+          ['user3@ininite.shop', 't.me/infiniteshop3'],
+          [
+            { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
+            { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
+          ],
+          true,
+          pgpKey,
+          'I like to sell a lot',
+          { from: sender3 }
+        );
+      });
+    });
+    context('add more items', async () => {
+      it('should succeed in another category j2', async () => {
+        await shopContract.additem(
+          sender3.name,
+          category2,
+          'Cheap planet with great landscapes',
+          [
+            'https://cdn.quasar.dev/img/mountains.jpg',
+            'https://cdn.quasar.dev/img/parallax1.jpg',
+            'https://cdn.quasar.dev/img/parallax2.jpg',
+          ],
+          [
+            { p: 2, pcs: 0 },
+            { p: 123, pcs: 1 },
+            { p: 200, pcs: 2 },
+          ],
+          3 * 24 * 3600,
+          'eu',
+          '',
+          [
+            { t: 5 * 24 * 3600, p: 140, rs: 'ww' },
+            { t: 4 * 24 * 3600, p: 100, rs: 'de' },
+          ],
+          [],
+          'This is a very good planet',
+          'Write me before you send the tokens!',
+          true,
+          expirationDate,
+          { from: sender3 }
+        );
+      });
+      it('should succeed with no image j3', async () => {
+        await shopContract.additem(
+          sender3.name,
+          category2,
+          'Watches with Jewelry',
+          [],
+          [
+            { p: 5, pcs: 0 },
+            { p: 123, pcs: 2 },
+            { p: 200, pcs: 3 },
+          ],
+          3 * 24 * 3600,
+          'eu',
+          'de',
+          [
+            { t: 5 * 24 * 3600, p: 140, rs: 'ch' },
+            { t: 4 * 24 * 3600, p: 100, rs: 'nl' },
+          ],
+          ['Gold', 'Silver'],
+          'Looks cool',
+          'I offer more items on my account page',
+          true,
+          expirationDate,
+          { from: sender3 }
+        );
+      });
+      it('should succeed in another category j4', async () => {
+        await shopContract.additem(
+          sender3.name,
+          category2,
+          'Quasar with ionic beams',
+          ['https://cdn.quasar.dev/img/quasar.jpg'],
+          [
+            { p: 0, pcs: 0 },
+            { p: 200, pcs: 2 },
+          ],
+          3 * 24 * 3600,
+          'ww',
+          'atch',
+          [{ t: 5 * 24 * 3600, p: 140, rs: 'ww' }],
+          ['big', 'bigger', 'biggest'],
+          'This is a very good\nQuasar<br>with long ionic beams',
+          'Write me before you send the tokens!',
+          true,
+          expirationDate,
+          { from: sender3 }
+        );
+      });
+    });
+  });
 });
 
 async function seedAccounts() {

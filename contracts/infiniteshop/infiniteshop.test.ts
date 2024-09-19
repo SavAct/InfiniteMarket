@@ -17,6 +17,7 @@ import {
   sleep,
 } from 'lamington';
 import * as chai from 'chai';
+import * as openpgp from 'openpgp';
 
 import { Infiniteshop, InfiniteshopUserTable } from './infiniteshop';
 import { EosioToken } from '../eosio.token/eosio.token';
@@ -57,8 +58,8 @@ describe('shop', async () => {
             sender1.name,
             ['user1@ininite.shop', 't.me/infiniteshop'],
             [
-              { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
-              { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
+              { sym: '4,EOS', contr: 'eosio.token', chain: 'eos', to: '' },
+              { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos', to: '' },
             ],
             true,
             pgpKey,
@@ -74,8 +75,8 @@ describe('shop', async () => {
           sender1.name,
           ['user1@ininite.shop', 't.me/infiniteshop'],
           [
-            { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
-            { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
+            { sym: '4,EOS', contr: 'eosio.token', chain: 'eos', to: '' },
+            { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos', to: '' },
           ],
           true,
           pgpKey,
@@ -491,8 +492,8 @@ describe('shop', async () => {
           sender2.name,
           ['user2@ininite.shop', 't.me/infiniteshop2'],
           [
-            { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
-            { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
+            { sym: '4,EOS', contr: 'eosio.token', chain: 'eos', to: '' },
+            { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos', to: '' },
           ],
           true,
           pgpKey,
@@ -507,7 +508,7 @@ describe('shop', async () => {
           shopContract.updateuser(
             sender2.name,
             ['user2@ininite.shop', 't.me/infiniteseller'],
-            [{ sym: '4,EOS', contr: 'eosio.token', chain: 'eos' }],
+            [{ sym: '4,EOS', contr: 'eosio.token', chain: 'eos', to: '' }],
             false,
             newPgpKey,
             'I do not like to sell',
@@ -521,7 +522,7 @@ describe('shop', async () => {
         await shopContract.updateuser(
           sender2.name,
           ['user2@ininite.shop', 't.me/infiniteseller'],
-          [{ sym: '4,EOS', contr: 'eosio.token', chain: 'eos' }],
+          [{ sym: '4,EOS', contr: 'eosio.token', chain: 'eos', to: '' }],
           false,
           newPgpKey,
           'I do not like to sell',
@@ -773,7 +774,7 @@ describe('shop', async () => {
     });
   });
   // Further item uploads for testing the interface
-  context('Further uploads (j/4)', async () => {
+  context('Further uploads (j/5)', async () => {
     let expirationDate: number;
     let pgpKey: string;
     let category1: bigint, category2: bigint;
@@ -781,29 +782,36 @@ describe('shop', async () => {
       expirationDate = Math.floor(Date.now() / 1000) + 30 * 24 * 3600;
       pgpKey = `-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-xjMEZbWOvxYJKwYBBAHaRw8BAQdAaGO3MtWEHcZboFQEBBq3e9OFRRSUmkWT
-lpJJ4gyxDWPNAMKMBBAWCgA+BYJltY6/BAsJBwgJkAQsWyYV9XyIAxUICgQW
-AAIBAhkBApsDAh4BFiEEufjWFn9QEf1vyRGvBCxbJhX1fIgAACb3AQCcvkPc
-PkoLKCyamKQl9PL08B0Z7S+FZIA//Tb3ECZJZQEA0UGauRiIDPaeRJHltcH4
-RuylOloA5TnYZ6hIGXqhowHOOARltY6/EgorBgEEAZdVAQUBAQdAXfJqme/K
-cZlJ683A/ct/HaJDVOmF7Ln9op106tAnpHADAQgHwngEGBYKACoFgmW1jr8J
-kAQsWyYV9XyIApsMFiEEufjWFn9QEf1vyRGvBCxbJhX1fIgAAFnyAQDMoGAM
-vhlzIf6wxFzgd/JPnPxO/NKXmCLTwrLqrCG0pQEA2DgVahIDLgYJeXrkyu8W
-SfWmazEgA1Lfo1MvSI8WwAY=
-8TVb
------END PGP PUBLIC KEY BLOCK-----`;
+xjMEZuRcghYJKwYBBAHaRw8BAQdAbag0y5jbyY/MsAg7RL7w0Lrb2GsoLNe4
+nEwCKwi4naLNAMKMBBAWCgA+BYJm5FyCBAsJBwgJkOMS/IOFejPKAxUICgQW
+AAIBAhkBApsDAh4BFiEEW6NFYmQBue+caIkK4xL8g4V6M8oAAAmIAP9fa7l5
+Cam5t6LWVR8D8zTiiZNuzvh++AQPpdPggAdVYAEA8kVY6TJV/X8HnbHIGaij
+cL9rEzLJRNSdXfRB4jLBsg7OOARm5FyCEgorBgEEAZdVAQUBAQdAUQfI+MTe
+l/gpnNDcj2oG0hVXYMBCE3xaAao95nBqsw4DAQgHwngEGBYKACoFgmbkXIIJ
+kOMS/IOFejPKApsMFiEEW6NFYmQBue+caIkK4xL8g4V6M8oAAOc0AQCENmBE
+GOWC8F+gEUVK8omWXy3gPeg7SiDusVH6b7l5AAD+LhFsvpeueWCZAy+iAjEY
+cIKk7jlu0eaWpGiZ5Yz36AA=
+=/FM8
+-----END PGP PUBLIC KEY BLOCK-----
+`;
       category1 = categoryBigInt(2, 1); // "Electronics"/"Computers, Tablets & Network Hardware"
 
       category2 = categoryBigInt(11, 1); // "Jewelry & Watches"/"Watches, Parts & Accessories"
     });
+    context('verify user.two', async () => {
+      // verifiy key
+      it('public key j1', async () => {
+        await openpgp.readKey({armoredKey: pgpKey});
+      });
+    });
     context('add a user', async () => {
-      it('should succeed j1', async () => {
+      it('should succeed j2', async () => {
         await shopContract.updateuser(
           sender3.name,
           ['user3@ininite.shop', 't.me/infiniteshop3'],
           [
-            { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
-            { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
+            { sym: '4,EOS', contr: 'eosio.token', chain: 'eos', to: '' },
+            { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos', to: '' },
           ],
           true,
           pgpKey,
@@ -813,7 +821,7 @@ SfWmazEgA1Lfo1MvSI8WwAY=
       });
     });
     context('add more items', async () => {
-      it('should succeed in another category j2', async () => {
+      it('should succeed in another category j3', async () => {
         await shopContract.additem(
           sender3.name,
           category2,
@@ -843,7 +851,7 @@ SfWmazEgA1Lfo1MvSI8WwAY=
           { from: sender3 }
         );
       });
-      it('should succeed with no image j3', async () => {
+      it('should succeed with no image j4', async () => {
         await shopContract.additem(
           sender3.name,
           category2,
@@ -869,7 +877,7 @@ SfWmazEgA1Lfo1MvSI8WwAY=
           { from: sender3 }
         );
       });
-      it('should succeed in another category j4', async () => {
+      it('should succeed in another category j5', async () => {
         await shopContract.additem(
           sender3.name,
           category2,

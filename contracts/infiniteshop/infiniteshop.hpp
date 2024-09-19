@@ -22,7 +22,7 @@ namespace savactshop
     {
       symbol sym;
       name contr;
-      string chain;
+      string chain; 
     };
 
     struct idAndCategory
@@ -145,7 +145,7 @@ namespace savactshop
      *
      * @param user User account name
      * @param contact Contact addresses like the email or Telegram contact address. Can be empty if already defined
-     * @param allowed Allowed token symbols. Can be empty if already defined
+     * @param allowed Allowed token symbols. Can be empty if already defined. Its property chain may also define a token specific user address in the future
      * @param active User is active
      * @param pgp PGP public key. Can be empty if already defined
      * @param note Note of this user. Can be empty if already defined

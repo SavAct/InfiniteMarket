@@ -1,6 +1,6 @@
 # Infinite Market Smart Contract
 
-A dezetralized online market place on Antelope blockchains.
+A decentralized online market place on Antelope blockchains.
 
 This is the smart contract for the following interface:
 https://github.com/SavAct/SavWeb-Pages/tree/main/Shop
@@ -59,7 +59,7 @@ sudo yarn install
 
 Install and start Docker, check for updates and install them. 
 
-On Docker 4.26.1 you find the settings by double clicking the Docker icon in the task bar. Select "Builds" and the button "Builder setings" in the right upper corner.
+On Docker 4.26.1 you find the settings by double clicking the Docker icon in the task bar. Select "Builds" and the button "Builder settings" in the right upper corner.
 
 Enable Debian in the settings at "Resources"/"WSL integration" and confirm it by clicking the button "Apply & restart". 
 
@@ -70,5 +70,5 @@ Do not forget also to restart the Debian consol.
 Docker must be running. Start the tests with the following command in the debian console
 
 ```sh
-sudo yarn test
+yarn test
 ```

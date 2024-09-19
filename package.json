@@ -13,16 +13,17 @@
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.3.5",
+    "@types/chai-as-promised": "^8.0.0",
+    "@types/chai-datetime": "^0.0.39",
     "@types/mocha": "^10.0.1",
-    "chai": "^4.3.7",
-    "prettier": "^3.1.1"
+    "chai": "^4.5.0",
+    "chai-as-promised": "^8.0.0",
+    "chai-datetime": "^1.8.0",
+    "prettier": "^3.1.1",
+    "openpgp": "^5.11.2"
   },
   "dependencies": {
-    "@types/chai-as-promised": "^7.1.2",
-    "@types/chai-datetime": "^0.0.39",
     "call-bind": "^1.0.2",
-    "chai-as-promised": "^7.1.1",
-    "chai-datetime": "^1.8.0",
     "eosjs": "^20.0.3",
     "lamington": "https://github.com/Alien-Worlds/lamington.git",
     "node-fetch": "^3.3.1",

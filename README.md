@@ -1,74 +1,18 @@
-# Infinite Market Smart Contract
+# Infinite Market
+An online marketplace for physical goods that needs no central authority.
+The frontend and the backend are stored on blockchain and therefor for free for ever online.
 
-A decentralized online market place on Antelope blockchains.
+# Physical Goods
+Usually, it is a big problem to connect the virtual world of blockchain with actions in the physical world without implementing central authorities. Only the fraud protection mechanism of Savact can handle that without any third party. It is free to use and fully integrated into payments within this marketplace to achieve a smooth user experience.
 
-This is the smart contract for the following interface:
-https://github.com/SavAct/SavWeb-Pages/tree/main/Shop
+# No Server Costs
+The backend is based on a smart contract running on the blockchain. What's unique, however, is that the entire frontend is also stored on-chain. This approach eliminates the need for conventional web hosting solutions like IPFS or self-hosted servers, removing associated costs and maintenance requirements. Once uploaded to the blockchain, the application remains accessible as long as the blockchain exists. It relies on the SavWeb technology, which operates as a static HTML file compatible with any standard web browser.
 
-# Guid to run the test suite also on windows
+# Independent
+The technologies employed enable completely independent online trading, eliminating costs for any service providers and keeping your private data with you. By avoiding fees for the marketplace or escrow services, merchants can achieve higher profits and offer items at lower prices.
 
-You need to activate the windows feature Hyper-V, but it is not available on Windows 10 Home. You might need to upgrade your Windows to Windows Pro.
+# Contact
+Feel free to follow and contact us in the [SavActGroup](https://t.me/SavActGroup).
 
-## Activate WSL 2
-
-Start windows PowerShell as administrator and run the following commands
-
-```sh
-dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-```
-
-```sh
-dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-```
-
-```sh
-wsl --set-default-version 2
-```
-
-## Setup Linux environment
-
-Install Debian from Microsoft store, start it, create your user account and run the following commands
-
-```sh
-sudo apt-get update
-```
-
-```sh
-sudo apt-get upgrade
-```
-
-For yarn installation via npm
-
-```sh
-sudo apt-get install npm
-```
-
-Install yarn globally
-
-```sh
-sudo npm install --global yarn
-```
-
-Navigate in the console to the folder teleporteos in which you can install the modules (**run the following command again if it fails**)
-
-```sh
-sudo yarn install
-```
-
-## Set up Docker
-
-Install and start Docker, check for updates and install them. 
-
-On Docker 4.26.1 you find the settings by double clicking the Docker icon in the task bar. Select "Builds" and the button "Builder settings" in the right upper corner.
-
-Enable Debian in the settings at "Resources"/"WSL integration" and confirm it by clicking the button "Apply & restart". 
-
-Do not forget also to restart the Debian consol. 
-
-## Run tests
-
-Docker must be running. Start the tests with the following command in the debian console
-
-```sh
-yarn test
-```
+# License
+You are completely free to use this code. Feel free to contribute or publish your own marketplace.

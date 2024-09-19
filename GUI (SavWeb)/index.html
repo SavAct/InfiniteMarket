@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="https://savact.com/images/icon_x150.png"
+    />
+
+    <!--
+      WARNING! Make sure that you match all Quasar and Vue related
+      tags to the same version! (Below it's "@2.17.0")
+    -->
+
+    <!-- See https://quasar.dev/start/umd to add further icon libraries -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/quasar@2.17.0/dist/quasar.prod.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+
+    <!-- Only for verifying if an EOS public key is valid -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/eosjs-ecc@4.0.7/lib/eosjs-ecc.min.js"
+      integrity="sha512-jX1VorEWM2R90w3t8/vUaT7J7Cuk0mqitUuuAKNT2Ncwasz2OxrZOL/L7EXp9tV27hi6H6wJUhCi0L82vmqmNA=="
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Use https://www.srihash.org/ to generate integrity hash -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/openpgp@5.11.0"
+      integrity="sha512-bXV/tlOYeiGVhV/KLzw/gRAD/8Y2HrR2vyQs8JcdXAV56Hng0mWtKfm4WhURroL9Ie8Jhl+QRs2YFvwhPJXrbg=="
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- To format an address into the national specific format -->
+    <script 
+      src="https://cdn.jsdelivr.net/npm/@fragaria/address-formatter@6.2.0/dist/umd/address-formatter.min.js" 
+      integrity="sha512-WhGaqK6bQqe7XYMv4Ep+/7OHvaNgZGVlvgoaD0Y/KmiBgLHvfuawTt/zMi1VOBOdorL07mqZMqHe9D4zt9SrJQ==" 
+      crossorigin="anonymous"
+    ></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Small Single File</title>
+    <link href="src/style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <!-- example of injection point where you write your app template -->
+    <div id="q-app"></div>
+
+    <!-- Add the following at the end of your body tag -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.5.6/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quasar@2.17.0/dist/quasar.umd.prod.js"></script>
+    <!-- <script src="https://unpkg.com/xxhash-wasm/umd/xxhash-wasm.js"></script> -->
+
+    <script type="module" src="src/app.ts" defer></script>
+  </body>
+  <style>
+    @keyframes fadeInGrow {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      25% {
+        transform: scale(1.1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(0.9);
+      }
+      75% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .plopOnShow {
+      animation: fadeInGrow 1s ease-out;
+    }
+
+    .no-text-overflow {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      word-wrap: break-word;
+    }
+  </style>
+</html>

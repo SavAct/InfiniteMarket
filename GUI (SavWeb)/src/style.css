@@ -1,0 +1,59 @@
+.number-color {
+  color: white;
+  background-color: black;
+  border-radius: 10%;
+}
+
+.link-btn .q-icon{
+  margin-right: 10px;
+}
+
+.vue-text-color {
+  color: #64b586;
+}
+
+.quasar-text-color {
+  color: #5ea3ef;
+}
+
+.ts-text-color {
+  color: #3478c6;
+}
+
+.vite-text-color {
+  color: #ab40f6;
+}
+
+:root {
+  --scrollbar-width-height: 10px;
+
+  --scrollbar-track: #353030;
+  --scrollbar-thumb: #204c73;
+  --scrollbar-thumb-hover: #0d6cd2;
+
+  --scrollbar-track-dark: #27272710;
+  --scrollbar-thumb-dark: #2c9dff2f;
+  --scrollbar-thumb-hover-dark: #2682e4;
+}
+
+::-webkit-scrollbar {
+  width: var(--scrollbar-width-height);
+  height: var(--scrollbar-width-height);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  box-shadow: inset 0 0 4px var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}

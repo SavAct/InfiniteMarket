@@ -1,0 +1,70 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "workbench.colorCustomizations": {
+      "titleBar.inactiveBackground": "#56000091",
+      "activityBar.background": "#56000091",
+      "statusBar.background": "#56000091"
+    },
+    "cSpell.words": [
+      "ABNCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "additem",
+      "beos",
+      "bloks",
+      "combobox",
+      "constexpr",
+      "coverme",
+      "darkstyle",
+      "DDTHH",
+      "Deleteuser",
+      "descr",
+      "Diecast",
+      "downarrow",
+      "eosio",
+      "eosjs",
+      "Formater",
+      "fragaria",
+      "ghostchat",
+      "iframe",
+      "infiniteshop",
+      "Itemstate",
+      "Kakao",
+      "Keybase",
+      "lamington",
+      "listbox",
+      "meetone",
+      "openpgp",
+      "Plushies",
+      "Powersport",
+      "Removeitem",
+      "Rmexpired",
+      "savact",
+      "savactsavpay",
+      "savpay",
+      "savweb",
+      "singlefile",
+      "Srcs",
+      "swipeable",
+      "Telos",
+      "thezeostoken",
+      "Threema",
+      "tiktok",
+      "timespan",
+      "uparrow",
+      "Updateuser",
+      "vite",
+      "weixin",
+      "whatshot",
+      "wickr",
+      "Worbli",
+      "XMPP",
+      "xxhash",
+      "ZEOS",
+      "IPFS"
+    ]
+  }
+}

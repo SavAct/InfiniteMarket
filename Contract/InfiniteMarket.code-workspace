@@ -10,6 +10,14 @@
       "activityBar.background": "#56004991",
       "statusBar.background": "#56004991"
     },
+    "terminal.integrated.defaultProfile.windows": "Debian (WSL)",
+    "terminal.integrated.profiles.windows": {
+      "Debian (WSL)": {
+        "path": "wsl.exe",
+        "args": ["-d", "Debian"],
+        "icon": "terminal-debian"
+      }
+    },
     "files.associations": {
       "vector": "cpp",
       "chrono": "cpp",

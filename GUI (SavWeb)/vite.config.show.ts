@@ -52,26 +52,31 @@ export default defineConfig(() => {
     viteSingleFile({ removeViteModuleLoader: true }),
   ];
 
-  // Minify only in production
+  let define: undefined | Record<string, any> = undefined;
   if (process.argv.includes("--dev") || process.argv.includes("-d")) {
-    plugins = neededPlugins;
-  } else {
-    let devPlugins: PluginOption = [
-      ViteMinifyPlugin({ collapseWhitespace: true }),
-      MinifyVue({
-        collapseWhitespace: true,
-        removeAttributeQuotes: false,
-        keepClosingSlash: true,
-      }),
-    ];
-    plugins = [...devPlugins, ...neededPlugins];
+    console.log("Development mode");
+    define = {
+      'import.meta.env.DEV': true,
+    }
   }
+  plugins = neededPlugins;
+  let devPlugins: PluginOption = [
+    ViteMinifyPlugin({ collapseWhitespace: true }),
+    MinifyVue({
+      collapseWhitespace: true,
+      removeAttributeQuotes: false,
+      keepClosingSlash: true,
+      removeComments: true,
+    }),
+  ];
+  plugins = [...devPlugins, ...neededPlugins];
 
   // Add the plugin to start the server after the first build
   plugins.push(executeAfterFirstBuildPlugin(startServer));
 
   return {
     plugins,
+    define
   };
 });
 

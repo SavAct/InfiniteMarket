@@ -44,6 +44,10 @@ export interface MarketContract {
   };
 }
 
+export interface MarketGui {
+  title: string;
+}
+
 export interface CategoryCacheEntry {
   list: CategoryList;
   last: LastBoundaryInfo;
@@ -65,7 +69,7 @@ interface LastBoundaryInfo {
 
 const contract: MarketContract = {
   account: "infiniteshop",
-  chain: "lamington",
+  chain: import.meta.env.DEV ? "lamington" : "eos",
   actions: {
     addItem: "additem",
     removeItem: "removeitem",
@@ -80,6 +84,10 @@ const contract: MarketContract = {
     item: "item",
   },
 };
+
+const gui: MarketGui = {
+  title: 'Infinite Shop',
+}
 
 const savpayContract = {
   account: "savactsavpay",
@@ -445,8 +453,9 @@ const barStyle: any = {
 };
 
 export const state = {
-  DISABLE_ENCRYPTION: true,
+  DISABLE_ENCRYPTION: true, // Disable encryption for now because it is not fully implemented yet
   contract,
+  gui,
   savpayContract,
   loginUser,
   user,

@@ -6,6 +6,7 @@ import user from "../pages/UserPage.vue";
 import buy from "../pages/BuyPage.vue";
 import sellResponse from "../pages/SellResponsePage.vue";
 import uploadPage from "../pages/UploadPage.vue";
+import { state } from "../store/globals";
 
 /**
  * Here you can add more pages
@@ -16,7 +17,7 @@ export const routes: Array<{
   title?: string;
   color?: string;
 }> = [
-  { name: "home", component: home, title: "Immortal Shop", color: "teal-6" },
+  { name: "home", component: home, title: state.gui.title, color: "teal-6" },
   {
     name: "item",
     component: item,

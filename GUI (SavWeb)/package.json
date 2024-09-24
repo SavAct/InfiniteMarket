@@ -1,19 +1,20 @@
 {
   "name": "infinite-market",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "author": {
     "name": "SavAct"
   },
-  "license": "MIT",  
+  "license": "MIT",
   "scripts": {
     "postinstall": "Node clone-script.js",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "show": "tsc && vite build --watch -c vite.config.show.ts --",
-    "live": "tsc && vite build --watch -c vite.config.live.ts --"
+    "live": "tsc && vite build --watch -c vite.config.live.ts --",
+    "test": "tsc && vite build -- --dev && cypress run"
   },
   "devDependencies": {
     "@fragaria/address-formatter": "^6.2.0",

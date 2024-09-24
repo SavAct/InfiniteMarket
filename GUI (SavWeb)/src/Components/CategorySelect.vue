@@ -148,8 +148,10 @@ export default Vue.defineComponent({
     },
   },
   setup(props, context) {
-    const level0All = { name: "All", index: 0, count: 0 };
-    const level1All = { name: "All", index: 0, count: 0 };
+    const allLabel = "None" // TODO: Show all items in the sub categories if selected and rename it to "All";
+
+    const level0All = { name: allLabel, index: 0, count: 0 };
+    const level1All = { name: allLabel, index: 0, count: 0 };
 
     function getAllCategoriesWithAll() {
       const cats = deepCopy(categories) as Category[];
@@ -167,7 +169,7 @@ export default Vue.defineComponent({
               }
             }
           }
-          cat.child.unshift({ name: `All (${allCount})`, index: 0 });
+          cat.child.unshift({ name: `${allLabel} (${allCount})`, index: 0 });
         }
       }
       return cats;
@@ -180,7 +182,7 @@ export default Vue.defineComponent({
 
     const categoriesWithAll = Vue.computed(() => {
       const options: Array<CategoryWithAll> = [
-        { name: "All", index: 0, count: 0 },
+        { name: allLabel, index: 0, count: 0 },
       ];
       if (props.range !== undefined) {
         for (let [catInt, count] of props.range) {
@@ -203,7 +205,7 @@ export default Vue.defineComponent({
             optCat = {
               name: catL0.name,
               index: l0,
-              child: [{ name: "All", index: 0, count: 0 }],
+              child: [{ name: allLabel, index: 0, count: 0 }],
               count: 0,
             };
             options.push(optCat);
@@ -244,7 +246,6 @@ export default Vue.defineComponent({
       set: (value) => {
         if (value.index !== _level1.value.index) {
           catValue.value = categoryBigInt(level0.value.index, value.index);
-          confirmClick();
         }
       },
     });
@@ -267,6 +268,7 @@ export default Vue.defineComponent({
         }
         idToIndexInputs(value);
         context.emit("update:modelValue", value);
+        confirmClick();
       },
     });
 
@@ -289,7 +291,7 @@ export default Vue.defineComponent({
         }
         return cat.name;
       }
-      return "All";
+      return allLabel;
     }
 
     Vue.watch(

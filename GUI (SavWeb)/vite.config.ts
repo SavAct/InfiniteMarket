@@ -13,8 +13,12 @@ export default defineConfig({
       collapseWhitespace: true,
       removeAttributeQuotes: false,
       keepClosingSlash: true,
+      removeComments: true,
     }),
     InlineVue(),
     viteSingleFile({ removeViteModuleLoader: true }),
   ],
+  define: {
+    'import.meta.env.DEV': process.argv.includes("--dev") || process.argv.includes("-d")
+  }
 });

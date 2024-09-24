@@ -233,19 +233,21 @@
                       }}</span></span
                     >
                   </div>
-                  <q-btn
-                    v-else
-                    :disable="
-                      !seller.active ||
-                      typeof totalPrice != 'number' ||
-                      !sToken?.value
-                    "
-                    class="bg-green col-12"
-                    label="Buy"
-                    color="white"
-                    outline
-                    @click="buyClick"
-                  ></q-btn>
+                  <div v-else class="col-12">
+                    <div class="q-mx-md q-mb-sm text-center" v-if="item && (!sToken?.value || !sRegion?.value)">{{'Select a ' + (sToken?.value? '':'token') + (!sToken?.value && !sRegion?.value?' and ':'') + (sRegion?.value? '':'region') + '!'}}</div>
+                    <q-btn
+                      :disable="
+                        !seller.active ||
+                        typeof totalPrice != 'number' ||
+                        !sToken?.value || !sRegion?.value
+                      "
+                      class="bg-green full-width"
+                      label="Buy"
+                      color="white"
+                      outline
+                      @click="buyClick"
+                    ></q-btn>
+                  </div>
                 </div>
               </q-card-section>
             </q-card>

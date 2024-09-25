@@ -91,6 +91,32 @@
       "xlocmes": "cpp",
       "xloctime": "cpp",
       "xstddef": "cpp"
-    }
+    },
+    "cSpell.words": [
+      "additem",
+      "Auths",
+      "datetime",
+      "deleteuser",
+      "descr",
+      "DRSQ",
+      "Eosio",
+      "eosjs",
+      "infiniteseller",
+      "infiniteshop",
+      "itemstate",
+      "lamington",
+      "openpgp",
+      "QUXN",
+      "removeitem",
+      "Rmapmr",
+      "rmexpired",
+      "savact",
+      "thezeostoken",
+      "Unban",
+      "updateuser",
+      "verifiy",
+      "ZEOS",
+      "ZXMWD"
+    ]
   }
 }

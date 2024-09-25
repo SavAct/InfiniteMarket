@@ -31,6 +31,7 @@ export interface OrderMsg {
   token: Token;
   pcs: number;
   to: string;
+  opt: string;
   buyer?: { acc: string, pubPgp: string, sigDate: number, address: Address};
   trx?: PayParams
 }

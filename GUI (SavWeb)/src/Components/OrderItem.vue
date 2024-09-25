@@ -47,6 +47,21 @@
         <span
           class="row"
           :class="$q.screen.lt.sm ? 'justify-between' : 'justify-left'"
+          v-if="opt !== undefined && opt.trim().length > 0"
+        >
+          <span :class="$q.screen.lt.sm ? '' : 'self-center'" class="col-auto"
+            >Option:</span
+          >
+          <q-chip
+            class="col-auto q-mr-none"
+            :size="$q.screen.lt.sm ? 'sm' : ''"
+            :color="chipBgColor()"
+            :label="opt"
+          ></q-chip>
+        </span>
+        <span
+          class="row"
+          :class="$q.screen.lt.sm ? 'justify-between' : 'justify-left'"
         >
           <span :class="$q.screen.lt.sm ? '' : 'self-center'" class="col-auto"
             >Price:</span
@@ -152,6 +167,10 @@ export default Vue.defineComponent({
       required: true,
     },
     toRegion: {
+      type: String,
+      required: true,
+    },
+    opt: {
       type: String,
       required: true,
     },

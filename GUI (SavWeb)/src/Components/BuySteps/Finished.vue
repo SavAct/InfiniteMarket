@@ -79,6 +79,7 @@
         :token="token"
         :to-region="orderData.to"
         :pieces="pieces"
+        :opt="orderData.opt"
       ></order-item>
 
       <!-- <div class="col-grow q-pb-md row justify-end">

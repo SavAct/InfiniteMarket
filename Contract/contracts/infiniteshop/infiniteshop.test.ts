@@ -889,7 +889,7 @@ cIKk7jlu0eaWpGiZ5Yz36AA=
           ],
           3 * 24 * 3600,
           'ww',
-          'atch',
+          'ach',
           [{ t: 5 * 24 * 3600, p: 140, rs: 'ww' }],
           ['big', 'bigger', 'biggest'],
           'This is a very good\nQuasar<br>with long ionic beams',
@@ -985,7 +985,7 @@ async function issueTokens() {
     myToken.account.name,
     sender1.name,
     transferToken,
-    'inital balance',
+    'initial balance',
     { from: myToken.account }
   );
 
@@ -993,7 +993,7 @@ async function issueTokens() {
     myToken.account.name,
     shopContract.account.name,
     transferToken,
-    'inital balance',
+    'initial balance',
     { from: myToken.account }
   );
 }

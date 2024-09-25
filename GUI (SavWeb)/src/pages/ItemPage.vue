@@ -66,9 +66,8 @@
               :file-size="2117632"
             ></gallery>
             <!-- <q-separator class="q-my-md" /> -->
-
             <q-card
-              v-if="showComboboxes && item?.opts && item.opts.length > 0"
+              v-if="item?.opts && item.opts.length > 0"
               :class="hasImgs ? 'q-mt-lg' : 'q-mt-sm'"
             >
               <q-card-section class="row items-center">
@@ -85,6 +84,7 @@
                   ></q-chip>
                 </div>
                 <q-select
+                  v-if="showComboboxes"
                   outlined
                   v-model="option"
                   :options="item.opts"
@@ -439,6 +439,7 @@ export default Vue.defineComponent({
             to: sRegion.value.value,
             token: sToken.value.value,
             pcs: pieces.value,
+            opt: option.value,
           },
         });
       }

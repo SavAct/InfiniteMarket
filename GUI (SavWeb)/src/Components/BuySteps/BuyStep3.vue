@@ -44,6 +44,7 @@
           :token="orderData.token"
           :pieces="orderData.pcs"
           :to-region="orderData.to"
+          :opt="orderData.opt"
           @total-token ="currentTokenPrice = $event"
           @ship-duration="shipDuration = $event"
           ref="orderItemRef"

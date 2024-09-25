@@ -95,6 +95,7 @@
                 :pieces="orderData.pcs"
                 :to-region="orderData.buyer.address.country"
                 :buyer="orderData.buyer.acc"
+                :opt="orderData.opt"
               ></order-item>
               <address-input class="q-mt-md" :model-value="orderData.buyer.address" readonly title="Customers address"></address-input>
               <!-- Implement when encryption is activated -->
@@ -225,6 +226,7 @@
               :pieces="orderData.pcs"
               :to-region="orderData.buyer.address.country"
               :buyer="orderData.buyer.acc"
+              :opt="orderData.opt"
             ></order-item>
             <address-input class="q-mt-md" :model-value="orderData.buyer.address" readonly title="Customers address"></address-input>
           </q-card-section>

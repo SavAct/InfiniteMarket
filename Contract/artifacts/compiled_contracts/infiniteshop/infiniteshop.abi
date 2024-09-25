@@ -248,10 +248,6 @@
             "base": "",
             "fields": [
                 {
-                    "name": "to",
-                    "type": "string"
-                },
-                {
                     "name": "sym",
                     "type": "symbol"
                 },

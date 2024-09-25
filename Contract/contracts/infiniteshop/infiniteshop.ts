@@ -83,7 +83,6 @@ export interface InfiniteshopToRegion {
 }
 
 export interface InfiniteshopTokenSymbol {
-	to: string;
 	sym: string;
 	contr: string;
 	chain: string;

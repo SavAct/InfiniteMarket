@@ -4,6 +4,20 @@
     "types": [],
     "structs": [
         {
+            "name": "Ref",
+            "base": "",
+            "fields": [
+                {
+                    "name": "Block",
+                    "type": "uint64"
+                },
+                {
+                    "name": "TrxId",
+                    "type": "checksum256"
+                }
+            ]
+        },
+        {
             "name": "additem",
             "base": "",
             "fields": [
@@ -226,6 +240,50 @@
             ]
         },
         {
+            "name": "setpage",
+            "base": "",
+            "fields": [
+                {
+                    "name": "key",
+                    "type": "uint64"
+                },
+                {
+                    "name": "refs",
+                    "type": "Ref[]"
+                },
+                {
+                    "name": "attri",
+                    "type": "string"
+                },
+                {
+                    "name": "fname",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "static_index_table",
+            "base": "",
+            "fields": [
+                {
+                    "name": "key",
+                    "type": "uint64"
+                },
+                {
+                    "name": "fname",
+                    "type": "string"
+                },
+                {
+                    "name": "refs",
+                    "type": "Ref[]"
+                },
+                {
+                    "name": "attri",
+                    "type": "string"
+                }
+            ]
+        },
+        {
             "name": "toRegion",
             "base": "",
             "fields": [
@@ -366,12 +424,24 @@
             "ricardian_contract": ""
         },
         {
+            "name": "setpage",
+            "type": "setpage",
+            "ricardian_contract": ""
+        },
+        {
             "name": "updateuser",
             "type": "updateuser",
             "ricardian_contract": ""
         }
     ],
     "tables": [
+        {
+            "name": "index",
+            "type": "static_index_table",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
         {
             "name": "item",
             "type": "itemTable",

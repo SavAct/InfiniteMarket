@@ -18,6 +18,62 @@ namespace savactshop
   {
 
   public:
+  	/**
+     * Reference to a transaction on the blockchain composed of the block number and transaction id
+    */
+    struct Ref{
+      uint64_t Block;
+      checksum256 TrxId;
+    };
+    /**
+     * Table to store SavWeb files
+    */
+    TABLE static_index_table {
+      uint64_t      key;        // Primary key
+      string        fname;      // File name with name extention
+      vector<Ref>   refs;       // ref[0] contains referred transaction of the first transaction. If the file is portioned there is a second entry ref[1] with a reference to the last entry  
+      string        attri;      // Attributes / optional moreover stuff
+      
+      auto primary_key() const { return key; }
+    };
+  	typedef multi_index<"index"_n, static_index_table> index_table;
+  
+    /** Set pages for the sale
+     * @param key   Primary key of the entry. key == 0 for the landing page
+     * @param refs  Reference to the landing page file: ref[0] contains referred transaction of the first transaction. If the file is portioned there is a second entry ref[1] with a reference to the last entry
+     * @param attri Attributes / optional moreover stuff
+     * @param fname File name with name extension
+     */
+    ACTION setpage(uint64_t key, vector<Ref>& refs, string& attri, string& fname) {
+      require_auth(get_self());
+
+      check(refs.size() > 0, "No ref mentioned.");
+
+      // Init the table
+      index_table _indexTable(get_self(), get_self().value);
+
+      // Find the entry
+      auto itr = _indexTable.find(key);
+
+      if(itr == _indexTable.end()){
+        // Add to table
+        _indexTable.emplace(get_self(), [&](auto& p) {
+          p.key = key;
+          p.attri = attri;
+          p.fname = fname;
+          p.refs = refs;
+        });
+      } else {
+        // Modify table
+        _indexTable.modify(itr, eosio::same_payer, [&](auto& p) {
+          p.attri = attri;
+          p.fname = fname;
+          p.refs = refs;
+        });
+      }
+    }
+
+  public:
     struct tokenSymbol
     {
       symbol sym;

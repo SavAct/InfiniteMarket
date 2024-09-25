@@ -72,3 +72,23 @@ Docker must be running. Start the tests with the following command in the debian
 ```sh
 yarn test
 ```
+
+## Link a SavWeb page
+
+You can use the contract account name as SavWeb domain by using the following contract action. 
+1. Upload the page to the blockchain with a [SavWeb upload contract](https://github.com/SavAct/SavWeb?tab=readme-ov-file#file-upload).
+2. Use the parameters of your upload as parameters for the following action on the market contract. 
+
+```cpp
+ACTION setpage(0, vector<Ref>& refs, "", "index.html")
+
+/**
+ * Ref type is a reference to a transaction on the blockchain composed of the block number and transaction id
+*/
+struct Ref{
+    uint64_t Block;
+    checksum256 TrxId;
+};
+```
+
+Note: If you uploaded the whole page with one transaction the `refs` array will hold only one entry `ref[0]` to the first transaction. If you split the upload to several transactions, there will be a second entry `ref[1]` that points to the last transaction. You will find the correct `refs` array after successfully uploading your page with your [SavWeb upload contract](https://github.com/SavAct/SavWeb?tab=readme-ov-file#file-upload) on blockchain at the the [upload contract table](https://github.com/SavAct/SavWeb/blob/main/Smart%20Contract/site/include/tables.hpp#L18).

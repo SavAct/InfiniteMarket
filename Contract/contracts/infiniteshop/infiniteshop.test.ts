@@ -58,8 +58,8 @@ describe('shop', async () => {
             sender1.name,
             ['user1@ininite.shop', 't.me/infiniteshop'],
             [
-              { sym: '4,EOS', contr: 'eosio.token', chain: 'eos', to: '' },
-              { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos', to: '' },
+              { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
+              { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
             ],
             true,
             pgpKey,
@@ -75,8 +75,8 @@ describe('shop', async () => {
           sender1.name,
           ['user1@ininite.shop', 't.me/infiniteshop'],
           [
-            { sym: '4,EOS', contr: 'eosio.token', chain: 'eos', to: '' },
-            { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos', to: '' },
+            { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
+            { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
           ],
           true,
           pgpKey,
@@ -492,8 +492,8 @@ describe('shop', async () => {
           sender2.name,
           ['user2@ininite.shop', 't.me/infiniteshop2'],
           [
-            { sym: '4,EOS', contr: 'eosio.token', chain: 'eos', to: '' },
-            { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos', to: '' },
+            { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
+            { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
           ],
           true,
           pgpKey,
@@ -508,7 +508,7 @@ describe('shop', async () => {
           shopContract.updateuser(
             sender2.name,
             ['user2@ininite.shop', 't.me/infiniteseller'],
-            [{ sym: '4,EOS', contr: 'eosio.token', chain: 'eos', to: '' }],
+            [{ sym: '4,EOS', contr: 'eosio.token', chain: 'eos' }],
             false,
             newPgpKey,
             'I do not like to sell',
@@ -522,7 +522,7 @@ describe('shop', async () => {
         await shopContract.updateuser(
           sender2.name,
           ['user2@ininite.shop', 't.me/infiniteseller'],
-          [{ sym: '4,EOS', contr: 'eosio.token', chain: 'eos', to: '' }],
+          [{ sym: '4,EOS', contr: 'eosio.token', chain: 'eos' }],
           false,
           newPgpKey,
           'I do not like to sell',
@@ -810,8 +810,8 @@ cIKk7jlu0eaWpGiZ5Yz36AA=
           sender3.name,
           ['user3@ininite.shop', 't.me/infiniteshop3'],
           [
-            { sym: '4,EOS', contr: 'eosio.token', chain: 'eos', to: '' },
-            { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos', to: '' },
+            { sym: '4,EOS', contr: 'eosio.token', chain: 'eos' },
+            { sym: '4,ZEOS', contr: 'thezeostoken', chain: 'eos' },
           ],
           true,
           pgpKey,

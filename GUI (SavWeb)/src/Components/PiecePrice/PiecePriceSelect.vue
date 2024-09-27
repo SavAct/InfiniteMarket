@@ -193,16 +193,16 @@ export default Vue.defineComponent({
     }
 
     function ppLineHeader(opt: PiecesPrice) {
-      return (Number(opt.p) / opt.pcs).toFixed(2) + " $/piece";
+      return ((Number(opt.p) / 100) / opt.pcs).toFixed(2) + " $/piece";
     }
     function ppLine(opt: PiecesPrice, selectedView = false) {
       if (options.value.priceOption === PriceOption.One) {
-        return `${opt.p} $`;
+        return `${Number(opt.p) / 100} $`;
       }
       if (selectedView && options.value.priceOption === PriceOption.Multiple) {
         return ppLineHeader(opt);
       }
-      return `${isFixAmount.value ? "" : "From up of "}${opt.pcs} ${opt.pcs == 1 ? "piece" : "pieces"} for ${(Number(opt.p) / opt.pcs).toFixed(2)} $/pcs`;
+      return `${isFixAmount.value ? "" : "From up of "}${opt.pcs} ${opt.pcs == 1 ? "piece" : "pieces"} for ${((Number(opt.p) / 100) / opt.pcs).toFixed(2)} $/pcs`;
     }
 
     Vue.onMounted(() => {
@@ -214,7 +214,7 @@ export default Vue.defineComponent({
     const chipText = Vue.computed(() => {
       const p = selected.value?.value.p
         ? " for " +
-          ((Number(selected.value.value.p) * sPieces.value) / selected.value.value.pcs).toFixed(2) +
+          (((Number(selected.value.value.p) / 100) * sPieces.value) / selected.value.value.pcs).toFixed(2) +
           " USD"
         : "";
       return (sPieces.value == 1 ? "1 piece" : sPieces.value + " pieces") + p;

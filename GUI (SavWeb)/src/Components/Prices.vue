@@ -1,30 +1,24 @@
 <template>
 <div class="row justify-between q-col-gutter-x-sm q-mt-sm">
-  <div v-if="price" class="col-auto">
+  <div v-if="priceStr !== undefined" class="col-auto">
     Price:
     <q-chip
       :color="chipBgColor()"
-      :label="price?.toFixed(2) + ' USD'"
+      :label="priceStr"
     ></q-chip>
   </div>
-  <div v-if="shipPrice !== undefined && shipDuration !== undefined && !Number.isNaN(shipPrice) && !Number.isNaN(shipDuration)" class="col-auto">
+  <div v-if="shipPriceAndDurStr !== undefined" class="col-auto">
     Shipping:
     <q-chip
       :color="chipBgColor()"
-      :label="
-        'Within ' +
-        (shipDuration / 3600 / 24) +
-        ' days for ' +
-        shipPrice?.toFixed(2) +
-        ' USD'
-      "
+      :label="shipPriceAndDurStr"
     ></q-chip>
   </div>
-  <div v-if="totalPrice" class="col-auto">
+  <div v-if="totalPriceStr !== undefined" class="col-auto">
     Total price:
     <q-chip
       :color="chipBgColor()"
-      :label="totalPrice?.toFixed(2) + ' USD'"
+      :label="totalPriceStr"
     ></q-chip>
     <q-chip
       v-if="token"
@@ -81,8 +75,11 @@ export default Vue.defineComponent({
     });
 
     const shipPrice = Vue.computed(() => {
-      if (props.shipToPrice !== undefined) {
-        return Number(props.shipToPrice.p);
+      if (props.shipToPrice !== undefined && props.shipToPrice.p !== undefined) {
+        const p = Number(props.shipToPrice.p);
+        if (!Number.isNaN(p)) {
+          return p;
+        }
       }
       return undefined;
     });
@@ -102,7 +99,7 @@ export default Vue.defineComponent({
     async function setTotalToken(price: number) {
       if (price !== undefined && !Number.isNaN(price) && props.token !== undefined) {
         totalToken.value = await getCurrentTokenPrice(
-          price,
+          price / 100,
           props.token.value
         );
       } else {
@@ -121,13 +118,41 @@ export default Vue.defineComponent({
       return (props.piecesPrice.p * props.pieces) / props.piecesPrice.pcs;
     });
 
+    const priceStr = Vue.computed(() => {
+      if(price.value !== undefined && !Number.isNaN(price.value)) {
+        return (price.value / 100).toFixed(2) + " USD";
+      } else {
+        return undefined;
+      }
+    });
+
+    const totalPriceStr = Vue.computed(() => {
+      if (totalPrice.value !== undefined && !Number.isNaN(totalPrice.value)) {
+        return (totalPrice.value / 100).toFixed(2) + " USD";
+      }
+      return undefined;
+    });
+
+    const shipPriceAndDurStr = Vue.computed(() => {
+      if (shipPrice.value !== undefined && shipDuration.value !== undefined && !Number.isNaN(shipDuration.value)) {
+        return (
+          "Within " +
+          (shipDuration.value / 3600 / 24) +
+          " days for " +
+          (shipPrice.value / 100).toFixed(2) +
+          " USD"
+        );
+      }
+      return undefined;
+    });
+
     return {
       chipBgColor,
       shipDuration,
-      totalPrice,
-      shipPrice,
+      totalPriceStr,
+      shipPriceAndDurStr,
       totalTokenStr,
-      price
+      priceStr
     };
   },
 });

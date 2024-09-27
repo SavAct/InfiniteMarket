@@ -91,9 +91,7 @@
             class="col-auto q-mr-none"
             :size="$q.screen.lt.sm ? 'sm' : ''"
             :color="chipBgColor()"
-            :label="
-              toRegionName + ' for ' + shouldShipPrice?.toFixed(2) + ' USD within ' + shipDurationStr 
-            "
+            :label="shipDetailsStr"
           ></q-chip>
         </span>
       </div>
@@ -112,7 +110,7 @@
               class="col-auto q-mr-none"
               :size="$q.screen.lt.sm ? 'sm' : ''"
               :color="chipBgColor()"
-              :label="price?.toFixed(2) + ' USD'"
+              :label="priceStr"
             ></q-chip>
           </span>
         </div>
@@ -259,7 +257,7 @@ export default Vue.defineComponent({
     async function setTotalToken(price: number) {
       if (price !== undefined && !Number.isNaN(price) && props.token !== undefined) {
         totalToken.value = await getCurrentTokenPrice(
-          price,
+          price / 100,
           props.token
         );
       } else {
@@ -290,16 +288,30 @@ export default Vue.defineComponent({
       }
     );
 
+    const shipDetailsStr = Vue.computed(() => {
+      if (shouldShipPrice.value !== undefined && !Number.isNaN(shouldShipPrice.value)) {
+        return toRegionName.value + ' for ' + (shouldShipPrice.value / 100).toFixed(2) + ' USD within ' + shipDurationStr.value 
+      }
+      return undefined;
+    });
+
+    const priceStr = Vue.computed(() => {
+      if(props.price !== undefined && !Number.isNaN(props.price)) {
+        return (props.price / 100).toFixed(2) + " USD";
+      } else {
+        return undefined;
+      }
+    });
+
     return {
       darkStyle: state.darkStyle,
       updateTokenPrice,
       piecesPrice,
       shouldItemsPrice,
-      shouldShipPrice,
+      shipDetailsStr,
+      priceStr,
       selectedShipTo,
-      shipDurationStr,
       excludedRegion,
-      toRegionName,
       chipBgColor,
       totalToken,
     };

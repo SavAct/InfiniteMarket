@@ -3,7 +3,7 @@
     <div class="col-3 q-pr-sm">
       <q-input
         label="Pieces"
-        v-model="modelValue.pcs"
+        v-model="pieces"
         type="number"
         min="1"
         outlined
@@ -12,12 +12,12 @@
     <q-input
       class="col-9"
       :label="priceInputLabel"
-      v-model="modelValue.p"
+      v-model="price"
       type="number"
       min="0"
       outlined
       :hint="
-        (Number(modelValue.p) / modelValue.pcs).toFixed(2) + ' USD per piece'
+        (price / pieces).toFixed(2) + ' USD per piece'
       "
       bottom-slots
     >
@@ -64,7 +64,25 @@ export default Vue.defineComponent({
       context.emit("remove");
     }
 
-    return { priceInputLabel, emitRemove };
+    const price = Vue.computed({
+      get: () => {
+        return Number(props.modelValue.p) / 100
+      },
+      set: (v) => {
+        context.emit("update:modelValue", { p: Math.round(Number(v) * 100), pcs: pieces.value });
+      }
+    });
+
+    const pieces =Vue.computed({
+      get: () => {
+        return props.modelValue.pcs
+      },
+      set: (v) => {
+        context.emit("update:modelValue", { p: Math.round(Number(price.value) * 100), pcs: v });
+      }
+    });
+
+    return { priceInputLabel, emitRemove, price, pieces };
   },
 });
 </script>

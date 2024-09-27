@@ -75,7 +75,7 @@
       <order-item
         class="ful-width q-mt-lg"
         :entry="entry"
-        :price="price"
+        v-model:price="usdPrice"
         :token="token"
         :to-region="orderData.to"
         :pieces="pieces"
@@ -147,7 +147,7 @@ export default Vue.defineComponent({
     RawDataBtn,
     OrderItem,
   },
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "update:price"],
   props: {
     entry: {
       type: Object as PropType<ItemTable>,
@@ -227,6 +227,15 @@ export default Vue.defineComponent({
       return json;
     });
 
+    const usdPrice = Vue.computed({
+      get() {
+        return props.price;
+      },
+      set(v) {
+        context.emit("update:price", v);
+      },
+    });
+
     const messageToStore = Vue.ref<string>("");
     let createAndEncryptId = 0;
     function delayEncryption() {
@@ -285,6 +294,7 @@ export default Vue.defineComponent({
 
     return {
       copy,
+      usdPrice,
       restTime,
       formatDuration,
       openTrx,

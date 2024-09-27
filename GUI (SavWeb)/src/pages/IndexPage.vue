@@ -105,12 +105,12 @@
                   "
                 >
                   <span class="text-bold" :class="priceSize">
-                    {{ row.pp[row.pp[0].pcs == 0 ? 1 : 0].p }} $
+                    {{ (Number(row.pp[row.pp[0].pcs == 0 ? 1 : 0].p) / 100).toFixed(2) }} $
                   </span>
                   <span> to </span>
                 </span>
                 <span class="text-bold" :class="priceSize">
-                  {{ row.pp[row.pp.length - 1].p }} $
+                  {{ (Number(row.pp[row.pp.length - 1].p) / 100).toFixed(2) }} $
                 </span>
               </div>
 

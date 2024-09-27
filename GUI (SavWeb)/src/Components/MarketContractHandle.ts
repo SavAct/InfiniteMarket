@@ -47,14 +47,15 @@ export class LoadFromContract {
    */
   public async loadUser(
     user: string,
+    foreUpdate = false,
     contract: MarketContract = state.contract,
     maxTries = 3,
-    waitTime = 1000
+    waitTime = 1000,
   ) {
     this.loadTries.value = 0;
 
     for (let i = 0; i < maxTries; i++) {
-      const tbUser = await state.getUser(user, contract);
+      const tbUser = await state.getUser(user, contract, foreUpdate);
       if (tbUser) {
         return tbUser as UserTable;
       } else {

@@ -252,7 +252,7 @@ import {
   openLinkOrMail,
   urlStartByDomainName,
 } from "../Components/LinkConverter";
-import { StringToSymbol, getKnownChainId } from "../Components/AntelopeHelpers";
+import { getKnownChainId } from "../Components/AntelopeHelpers";
 import { router } from "../router/simpleRouter";
 
 import { HasQueryRequest, HasQueryUserName } from "../Components/queryHelper";
@@ -279,7 +279,7 @@ export default Vue.defineComponent({
       set: (v) => {
         if (_userName.value !== v) {
           _userName.value = v;
-          getUserData();
+          getUserData(true);
         } else {
           checkingUserData.value = false;
         }
@@ -429,12 +429,23 @@ export default Vue.defineComponent({
           })
         : [];
 
+        let pgp: string;
+        console.log("pgpKey.value.pub", pgpKey.value.pub.length, state.user.value.pgp.length, );
+        if(pgpKey.value.pub.trim() == state.user.value.pgp.trim()) {
+          // Empty for no change
+          pgp = "";
+          console.log("No change in pgp key");    
+        } else {
+          pgp = pgpKey.value.pub.trim() == "" ? " " : pgpKey.value.pub;
+          console.log("New pgp key", pgp.length);
+        }
+      
       const data: Updateuser = {
         user: userName.value,
         contact: contacts.value.map((c) => c.trim()),
         allowed,
         active: isSeller.value ? sellerActive.value : false,
-        pgp: pgpKey.value.pub,
+        pgp,
         note: isSeller.value ? note.value : "",
       };
 
@@ -468,7 +479,7 @@ export default Vue.defineComponent({
       if (resultUser?.name !== undefined) {
         if (resultUser.name === userName.value) {
           // Update user data by button click
-          getUserData();
+          getUserData(true);
         } else {
           userName.value = resultUser.name;
           // getUserData will already be executed when userName changes
@@ -551,7 +562,7 @@ export default Vue.defineComponent({
 
     const loadUser = new LoadFromContract();
 
-    async function getUserData() {
+    async function getUserData(forceUpdate = false) {
       checkingUserData.value = true;
       // Unset everything
       pgpKey.value = {
@@ -562,28 +573,30 @@ export default Vue.defineComponent({
       note.value = "";
       sellerActive.value = false;
       isBanned.value = false;
-      contacts.value = [];
+      contacts.value = [];      
       allowedTokens.value = [];
       items.value = undefined;
       _isSeller.value = false;
 
       // Load user data
-      const foundUser = await loadUser.loadUser(userName.value);
+      const foundUser = await loadUser.loadUser(userName.value, forceUpdate);
+      
       if (foundUser) {
         state.user.value = userTableEntryToUser(foundUser);
         pgpKey.value = {
-          pub: state.user.value.pgp,
+          pub: state.user.value.pgp.trim(),
           pri: "",
           passphrase: "",
         };
         note.value = state.user.value.note;
         sellerActive.value = Boolean(state.user.value.active);
         isBanned.value = state.user.value.banned;
-        contacts.value = state.user.value.contact;
+        // Clone state.user.value.contact and set it to contact.value
+        contacts.value = state.user.value.contact.map((c) => c);
         allowedTokens.value = state.user.value.allowed.map((t) => {
           return {
             label: `${t.symbol.name} ${t.contract}@${t.chain}`,
-            symbol: StringToSymbol(t.symbol.name),
+            symbol: t.symbol,
             contract: t.contract,
             chain: t.chain,
           };

@@ -5,10 +5,6 @@
 using namespace eosio;
 using namespace std;
 
-#define TOKEN_CONTRACT_STR "token.savact"
-#define TOKEN_CONTRACT name(TOKEN_CONTRACT_STR)
-#define TOKEN_SYMBOL symbol("SAVACT", 4)
-
 #define EXPIRATION_DATE_MIN (7 * 24 * 3600)
 #define EXPIRATION_DATE_MAX (90 * 24 * 3600)
 

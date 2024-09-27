@@ -858,9 +858,9 @@ cIKk7jlu0eaWpGiZ5Yz36AA=
           'Watches with Jewelry',
           [],
           [
-            { p: 5, pcs: 0 },
-            { p: 123, pcs: 2 },
-            { p: 200, pcs: 3 },
+            { p: 500, pcs: 0 },
+            { p: 12300, pcs: 2 },
+            { p: 20000, pcs: 3 },
           ],
           3 * 24 * 3600,
           'eu',

@@ -75,6 +75,31 @@ export function getInitialDuration(msValue: number): {
   }
 }
 
+function roundToPrecision(value: number, precision: number) {
+  const factor = Math.pow(10, precision);
+  console.log('round------------', value, factor);
+  
+  return Math.round(value * factor) / factor;
+}
+
+export function getRoundedDuration(msValue: number, precision = 0): {
+  unit: "months" | "weeks" | "days" | "hours" | "minutes";
+  n: number;
+} {
+  const value = Math.floor(msValue / 60000);
+  if (value >= monthInMin) {
+    return { unit: "months", n: roundToPrecision(value / monthInMin, precision) };
+  } else if (value >= weekInMin) {
+    return { unit: "weeks", n: roundToPrecision(value / weekInMin, precision) };
+  } else if (value >= dayInMin) {
+    return { unit: "days", n: roundToPrecision(value / dayInMin, precision) };
+  } else if (value >= hourInMin) {
+    return { unit: "hours", n: roundToPrecision(value / hourInMin, precision) };
+  } else {
+    return { unit: "minutes", n: roundToPrecision(value, precision) };
+  }
+}
+
 /**
  * Get duration from duration unit and number in milliseconds
  * @param unit Duration unit

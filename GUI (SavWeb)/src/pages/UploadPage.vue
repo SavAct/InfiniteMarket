@@ -434,7 +434,7 @@ export default Vue.defineComponent({
         label: string; // Region name
         value: string; // Country code
         sp: number; // Shipping price
-        sd: number; // Shipping duration
+        sd: number; // Shipping duration in ms
       }>
     >([]);
     if (pIpt && pIpt.shipTo !== undefined) {
@@ -445,8 +445,8 @@ export default Vue.defineComponent({
             _toRegions.value.push({
               label: getRegion(c) ?? "",
               value: c,
-              sp: s.p,
-              sd: s.t,
+              sp: Number(s.p) / 100,
+              sd: Number(s.t) * 1000,
             });
           }
         }
@@ -540,8 +540,8 @@ export default Vue.defineComponent({
       let shipTo: Array<ToRegion> = [];
       for (let r of toRegions.value) {
         // Normalize region values
-        let sd = Number(r.sd);
-        let sp = Number(r.sp);
+        let sd = Math.floor(Number(r.sd) / 1000);
+        let sp = Math.floor(Number(r.sp) * 100);
         if (Number.isNaN(sd)) sd = state.defaultValue.shipDuration;
         if (Number.isNaN(sp)) sp = 0;
         // Compare with existing region values
@@ -742,8 +742,8 @@ export default Vue.defineComponent({
             return {
               label: getRegion(c) ?? "",
               value: c,
-              sp: s.p,
-              sd: s.t,
+              sp: Number(s.p) / 100,
+              sd: Number(s.t) * 1000,
             };
           }
         }

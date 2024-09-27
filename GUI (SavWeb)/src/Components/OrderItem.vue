@@ -142,6 +142,7 @@ import { ItemTable, ToRegion } from "./ContractInterfaces";
 import { countryCodes, euCountryCodes, getRegion } from "./ConvertRegion";
 import { chipBgColor } from "./styleHelper";
 import { getCurrentTokenPrice } from "./ConvertPrices";
+import { getInitialDuration, getRoundedDuration } from "./GeneralJSHelper";
 
 export default Vue.defineComponent({
   name: "orderItem",
@@ -210,6 +211,7 @@ export default Vue.defineComponent({
     });
 
     const selectedShipTo = Vue.computed(() => {
+      
       if (shipTo.value !== undefined && props.toRegion !== undefined) {
         let EU: ToRegion | undefined = undefined;
         let WW: ToRegion | undefined = undefined;
@@ -218,7 +220,7 @@ export default Vue.defineComponent({
             // Check if there are group regions defined
             if (r == "eu") EU = { p: a.p, t: a.t, rs: "eu" };
             if (r == "ww") WW = { p: a.p, t: a.t, rs: "ww" };
-            return r == props.toRegion;
+            return r == props.toRegion.toLowerCase();
           })
         );
         if (result) return { p: result.p, t: result.t, rs: props.toRegion };
@@ -241,7 +243,14 @@ export default Vue.defineComponent({
       if (selectedShipTo.value !== undefined) {
         const t = Number(selectedShipTo.value.t) + Number(props.entry.prepT);
         context.emit("shipDuration", t);
-        return t / 3600 / 24 + " days";
+      
+        // Use exact duration if value is less than 1000 time units otherwise round to 4 digits
+        const msT = t * 1000;
+        let dur = getInitialDuration(msT);
+        if (dur !== undefined && dur.n > 1000) {
+          dur = getRoundedDuration(msT, 4);
+        }
+        return dur.n + " " + dur.unit;
       }
       return undefined;
     });

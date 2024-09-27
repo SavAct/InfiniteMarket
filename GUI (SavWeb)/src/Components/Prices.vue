@@ -34,6 +34,7 @@ import { PropType } from "vue";
 import { chipBgColor } from "./styleHelper";
 import { Asset, AssetToString, Token } from "./AntelopeHelpers";
 import { getCurrentTokenPrice } from "./ConvertPrices";
+import { getInitialDuration, getRoundedDuration } from "./GeneralJSHelper";
 
 export default Vue.defineComponent({
   name: "prices",
@@ -135,13 +136,15 @@ export default Vue.defineComponent({
 
     const shipPriceAndDurStr = Vue.computed(() => {
       if (shipPrice.value !== undefined && shipDuration.value !== undefined && !Number.isNaN(shipDuration.value)) {
-        return (
-          "Within " +
-          (shipDuration.value / 3600 / 24) +
-          " days for " +
-          (shipPrice.value / 100).toFixed(2) +
-          " USD"
-        );
+
+        // Use exact duration if value is less than 1000 time units otherwise round to 4 digits
+        const msT = shipDuration.value * 1000;
+        let dur = getInitialDuration(msT);
+        if (dur !== undefined && dur.n > 1000) {
+          dur = getRoundedDuration(msT, 4);
+        }
+
+        return (`Within ${dur.n} ${dur.unit} for ${(shipPrice.value / 100).toFixed(2)} USD`);
       }
       return undefined;
     });

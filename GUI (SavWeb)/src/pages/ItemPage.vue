@@ -206,7 +206,6 @@
                   v-model:pieces="pieces"
                   v-model="piecesPrice"
                 ></piece-price-select>
-
                 <prices
                   :token="sToken"
                   :ship-to-price="selectedShipTo"

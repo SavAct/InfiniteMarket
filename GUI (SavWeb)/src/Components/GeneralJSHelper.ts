@@ -77,8 +77,6 @@ export function getInitialDuration(msValue: number): {
 
 function roundToPrecision(value: number, precision: number) {
   const factor = Math.pow(10, precision);
-  console.log('round------------', value, factor);
-  
   return Math.round(value * factor) / factor;
 }
 

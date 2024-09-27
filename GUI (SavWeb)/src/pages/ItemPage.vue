@@ -538,7 +538,7 @@ export default Vue.defineComponent({
     function openSettings() {
       router.push({
         name: "upload",
-        query: { id: id.value, category: category.value },
+        query: { id: id.value, category: category.value, settings: true },
       });
     }
 

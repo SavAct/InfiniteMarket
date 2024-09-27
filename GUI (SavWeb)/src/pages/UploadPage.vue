@@ -342,7 +342,7 @@ import {
   ToRegion,
 } from "../Components/ContractInterfaces";
 import { savWeb } from "../store/connect";
-import { GetQueryIdAndCategory, ItemPageMode } from "../Components/queryHelper";
+import { GetQueryIdAndCategory, IsSettingsRequest, ItemPageMode } from "../Components/queryHelper";
 import {
   checkUserOffline,
   checkUserOnline,
@@ -764,7 +764,9 @@ export default Vue.defineComponent({
     Vue.onMounted(() => {
       // Load already uploaded shop by query id and category if parameters are not already set
       const id_category = GetQueryIdAndCategory();
-      if (!pIpt && id_category?.category !== undefined && id_category?.category !== 0n) {
+      const isSettings = IsSettingsRequest()
+      
+      if ((!pIpt || isSettings) && id_category?.category !== undefined && id_category?.category !== 0n) {
         id.value = id_category.id;
         category.value = id_category.category;
 

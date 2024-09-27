@@ -22,6 +22,10 @@ export function GetQueryIdAndCategory() {
   return undefined;
 }
 
+export function IsSettingsRequest() {
+  return route.query && "settings" in route.query && route.query.settings !== false;
+}
+
 export function GetCategory() {
   if (route.query) {
     const category =

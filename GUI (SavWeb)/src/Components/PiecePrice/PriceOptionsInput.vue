@@ -1,22 +1,5 @@
 <template>
-  <div class="q-mb-sm row q-gutter-sm">
-    <div class="col-auto">
-      <q-btn-toggle
-        :class="darkStyle ? 'bg-grey-9 text-white' : 'bg-grey-3 text-black'"
-        v-model="option"
-        toggle-color="primary"
-        :options="options"
-        size="sm"
-        no-caps
-      />
-    </div>
-    <div class="col-grow">quantity {{isOnlyOne?'option':'options'}} per order.</div>
-    <q-icon size="sm" v-if="$q.screen.lt.sm" name="info" class="col-auto">
-      <q-tooltip>{{ optionDescription }}</q-tooltip>
-    </q-icon>
-    <div v-else class="col-auto">{{ optionDescription }}</div>
-  </div>
-  <div v-if="!isOnlyOne" class="row justify-between">
+  <div class="row justify-between">
     <piece-price-input
       class="q-mb-sm"
       v-for="(entry, index) in pp"
@@ -24,10 +7,9 @@
       v-model="entry.value"
       @remove="pp.splice(index, 1)"
       :rm-btn="pp.length != 1"
-      :from="isMultiple"
+      :from="!isFixed"
     />
     <q-btn
-      v-if="!isOnlyOne"
       class="col-12 q-mt-sm"
       size="sm"
       dense
@@ -38,29 +20,39 @@
     >
     </q-btn>
   </div>
-  <div v-else class="q-mb-sm">
-    <piece-price-input v-model="pp[0].value" :rm-btn="false" />
-  </div>
-  <div
-    v-if="isMultiple || isOnlyOne"
-    class="col-12 row q-mt-sm justify-between q-gutter-sm"
-  >
-    <div class="col-grow">
+  <div class="row q-gutter-sm q-pt-md">
+    <div class="col-grow row q-pt-sm">
+      <div class="col-auto">
+        <q-btn-toggle
+          :class="darkStyle ? 'bg-grey-9 text-white' : 'bg-grey-3 text-black'"
+          v-model="option"
+          toggle-color="primary"
+          :options="options"
+          size="sm"
+          no-caps
+        />
+      </div>
+    </div>
+    <div
+      v-if="!isFixed"
+      class="col-auto row justify-between"
+    >
       <q-checkbox
-        label="Maximum quantity per order"
+        class="col-auto"
+        :label="isMaxPcs?'':'Maximum quantity'"
         v-model="isMaxPcs"
       ></q-checkbox>
+      <q-input
+        v-if="isMaxPcs && !isFixed"
+        label="Max quantity"
+        class="col-auto"
+        dense
+        v-model="maxPcs"
+        type="number"
+        min="1"
+        outlined
+      />
     </div>
-    <q-input
-      v-if="isMaxPcs"
-      label="Max quantity"
-      class="col-auto"
-      dense
-      v-model="maxPcs"
-      type="number"
-      min="1"
-      outlined
-    />
   </div>
 </template>
 <script lang="ts">
@@ -90,20 +82,20 @@ export default Vue.defineComponent({
       Vue.ref({ p: 0, pcs: 1 }),
     ]);
 
+    enum QuantityOption {
+      Variable = 0,
+      Fixed = 1,
+    }
+
     const options = [
-      { label: "One", value: PriceOption.One },
-      { label: "Multiple ", value: PriceOption.Multiple },
-      { label: "Only predefined", value: PriceOption.Predefined },
+      { label: "Variable quantities", value: QuantityOption.Variable },
+      { label: "Fixed quantities", value: QuantityOption.Fixed },
     ];
 
-    const option = Vue.ref<PriceOption>(PriceOption.One);
+    const option = Vue.ref<QuantityOption>(QuantityOption.Variable);
 
-    const isOnlyOne = Vue.computed(() => {
-      return option.value === PriceOption.One;
-    });
-
-    const isMultiple = Vue.computed(() => {
-      return option.value === PriceOption.Multiple;
+    const isFixed = Vue.computed(() => {
+      return option.value === QuantityOption.Fixed;
     });
 
     const isMaxPcs = Vue.ref<boolean>(false);
@@ -133,9 +125,9 @@ export default Vue.defineComponent({
     Vue.watch(
       () => option.value,
       () => {
-        if (option.value !== PriceOption.One && pp.value.length === 1) {
-          addPriceWithUnit();
-        }
+        // if (option.value !== PriceOption.One && pp.value.length === 1) {
+        //   addPriceWithUnit();
+        // }
         debounceUpdate();
       }
     );
@@ -172,32 +164,32 @@ export default Vue.defineComponent({
       }
 
       newValue = pp.value.map((v) => {
-        return { p: v.value.p, pcs: v.value.pcs };
+        return { p: v.value.p, pcs: Math.round(Number(v.value.pcs) * 100) / 100 };
       });
 
+      // { p: price, pcs: min pieces } // Only one price for arbitrary quantity
+      // { p: price, pcs: min pieces } ... { p: price, pcs: pieces } // Variable price levels depending on arbitrary quantity
+      // { p: max pieces, pcs: 0 }{ p: price, pcs: min pieces } // Only one price for arbitrary quantity with a maximum quantity
+      // { p: max pieces, pcs: 0 }{ p: price, pcs: min pieces } .. { p: price, pcs: pieces } // Variable price levels depending on arbitrary quantity with a maximum quantity
+      // { p: 0, pcs: 0 }{ p: price, pcs: pieces } // Only one price and one quantity
+      // { p: 0, pcs: 0 }{ p: price, pcs: pieces } ... { p: price, pcs: pieces } // Only discrete quantity options
+
       switch (option.value) {
-        case PriceOption.One:
-          // No several pieces option purchasable if array has only two options (price = 0 by pcs = 0 ) and the actual price piece option
-          newValue =
-            pp.value.length > 0
-              ? [
-                  { p: 0, pcs: 0 },
-                  { p: pp.value[0].value.p, pcs: pp.value[0].value.pcs },
-                ]
-              : [
-                  { p: 0, pcs: 0 },
-                  { p: 0, pcs: 1 },
-                ];
-          break;
-        case PriceOption.Multiple:
-          // If a maximum of pcs is defined, the pcs field will be set to 0 and the max pieces number will be stored in the price field
-          if (isMaxPcs.value && maxPcs.value > 1) {
-            newValue.unshift({ p: maxPcs.value, pcs: 0 });
+        case QuantityOption.Fixed:
+          if(pp.value.length > 0){
+            newValue.unshift({ p: 0, pcs: 0 });
+          } else {
+            newValue = [{ p: 0, pcs: 0 }, { p: 0, pcs: 1 }]
           }
           break;
-        case PriceOption.Predefined:
-          // Only predefined piece numbers purchasable if array starts by (price = 0 by pcs = 0 )
-          newValue.unshift({ p: 0, pcs: 0 });
+        case QuantityOption.Variable:
+          if (isMaxPcs.value && maxPcs.value > 1) {
+            if (pp.value.length === 1 && pp.value[0].value.pcs == maxPcs.value) {
+              newValue.unshift({ p: 0, pcs: 0 });
+            } else {
+              newValue.unshift({ p: maxPcs.value, pcs: 0 });
+            }
+          }
           break;
       }
       context.emit("update:modelValue", newValue);
@@ -215,17 +207,6 @@ export default Vue.defineComponent({
       pp.value.push(Vue.ref({ p: price, pcs: pieces }));
     }
 
-    const optionDescription = Vue.computed(() => {
-      switch (option.value) {
-        case PriceOption.One:
-          return "(No quantity discount)";
-        case PriceOption.Multiple:
-            return "(Different price levels depending on quantity)";
-        case PriceOption.Predefined:
-            return "(Only predefined quantity numbers purchasable)";
-      }
-    });
-
     Vue.watch(
       () => props.modelValue,
       () => {
@@ -240,9 +221,15 @@ export default Vue.defineComponent({
               })
             : [Vue.ref({ p: 0, pcs: 1 })];
 
-        option.value = mVOptions.priceOption
-          ? mVOptions.priceOption
-          : PriceOption.One;
+        switch (mVOptions.priceOption) {
+          case PriceOption.One:
+          case PriceOption.Predefined:
+            option.value = QuantityOption.Fixed;
+            break;
+          case PriceOption.Multiple:
+            option.value = QuantityOption.Variable;
+            break;
+        }
         isMaxPcs.value = mVOptions.maxPieces !== undefined;
         maxPcs.value = mVOptions.maxPieces ? mVOptions.maxPieces : 2;
       },
@@ -253,11 +240,9 @@ export default Vue.defineComponent({
       addPriceWithUnit,
       options,
       option,
-      isOnlyOne,
-      isMultiple,
+      isFixed,
       pp,
       darkStyle: state.darkStyle,
-      optionDescription,
       isMaxPcs,
       maxPcs,
     };

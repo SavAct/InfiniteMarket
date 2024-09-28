@@ -196,7 +196,7 @@ export default Vue.defineComponent({
       return ((Number(opt.p) / 100) / opt.pcs).toFixed(2) + " $/article";
     }
     function ppLine(opt: PiecesPrice, selectedView = false) {
-      if (options.value.priceOption === PriceOption.One) {
+      if (options.value.priceOption === PriceOption.One && options.value.piecePrices[options.value.piecePrices.length - 1].pcs == 1) {
         return `${Number(opt.p) / 100} $`;
       }
       if (selectedView && options.value.priceOption === PriceOption.Multiple) {

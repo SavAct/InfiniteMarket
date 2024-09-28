@@ -536,9 +536,10 @@ export default Vue.defineComponent({
     }
 
     function openSettings() {
+      state.uploadPageInputs.value = undefined; // Clear upload page inputs to load them from the table entry
       router.push({
         name: "upload",
-        query: { id: id.value, category: category.value, settings: true },
+        query: { id: id.value, category: category.value },
       });
     }
 

@@ -25,16 +25,15 @@ describe('upload article', () => {
       cy.get('main.q-page input[type="text"]').eq(2).should('be.visible').type('Forrest{enter}')
 
       // Quantity option per order
-      cy.get('main.q-page div.q-btn-group span.block').contains('Multiple').should('be.visible').click()
-      cy.get('main.q-page div').contains('(Different price levels depending on quantity)').parent().next().find('input[aria-label="Quantity"][type="number"]').eq(0).should('be.visible').parent().parent().parent().parent().parent().next().find('input[aria-label="Price from 1 article"]').clear().type('3')
-      cy.get('main.q-page div').contains('(Different price levels depending on quantity)').parent().next().find('input[aria-label="Quantity"][type="number"]').eq(1).should('be.visible').clear().type('5').parent().parent().parent().parent().parent().next().find('input[aria-label="Price from 5 articles"]').clear().type('10')
+      cy.get('main.q-page div').find('input[aria-label="Quantity"][type="number"]').eq(0).should('be.visible').parent().parent().parent().parent().parent().next().find('input[aria-label="Price from 1 article"]').clear().type('3')
       cy.get('main.q-page .q-field__messages div').contains('3.00 USD per article').should('be.visible')
-      cy.get('main.q-page .q-field__messages div').contains('2.00 USD per article').should('be.visible')
       cy.get('main.q-page button.q-btn span.block').contains('Add quantity discount').should('be.visible').click()
-      cy.get('main.q-page div').contains('(Different price levels depending on quantity)').parent().next().find('input[aria-label="Quantity"][type="number"]').eq(2).should('be.visible').clear().type('100').parent().parent().parent().parent().parent().next().find('input[aria-label="Price from 100 articles"]').clear().type('95.55')
+      cy.get('main.q-page div').find('input[aria-label="Quantity"][type="number"]').eq(1).should('be.visible').clear().type('100').parent().parent().parent().parent().parent().next().find('input[aria-label="Price from 100 articles"]').clear().type('95.55')
       cy.get('main.q-page .q-field__messages div').contains('0.96 USD per article').should('be.visible')
       cy.get('main.q-page input[type="checkbox"]').eq(0).parent().should('be.visible').click()
       cy.get('main.q-page input[type="number"][aria-label="Max quantity"]').should('be.visible').clear().type('500')
+      cy.get('main.q-page span.block').contains('Fixed quantities').should('be.visible').click()
+      
       cy.get('main.q-page div[aria-label="Items are available from now on"][aria-checked="true"]').should('be.visible')
       
       cy.get('main.q-page input[type="search"][role="combobox"][aria-label="From region"]').should('be.visible').click().type('Ger').wait(200).type('{downarrow}{enter}')
@@ -49,7 +48,7 @@ describe('upload article', () => {
       cy.get('main.q-page input[aria-label="Delivery price"][type="number"]').eq(1).should('be.visible').clear().type('20')
       cy.get('main.q-page input[aria-label="Max delivery duration"][type="number"]').eq(1).should('be.visible').clear().type('16')
       
-      cy.get('main.q-page input[type="checkbox"]').eq(2).parent().should('be.visible').click()
+      cy.get('main.q-page input[type="checkbox"]').eq(1).parent().should('be.visible').click()
       cy.get('main.q-page textarea[aria-label="Note"]').should('be.visible').click()
       cy.get('main.q-page textarea[aria-label="Note"]').invoke('val', SellerNote).trigger('input')
 
@@ -81,9 +80,8 @@ describe('upload article', () => {
       cy.get('main.q-page div.q-chip.text-red .q-chip__content div').contains('Germany').should('be.visible')
       cy.get('main.q-page .q-field input[role="combobox"]').first().parent().parent().should('be.visible').click()
       cy.get('div.q-item__label').contains('3.00 $/article').should('be.visible')
-      cy.get('div.q-item__label').contains('2.00 $/article').should('be.visible')
       cy.get('div.q-item__label').contains('0.96 $/article').should('be.visible')
-      cy.get('div.q-item__label span').contains('From up of 100 articles for 0.96 $/article').should('be.visible').click()
+      cy.get('div.q-item__label span').contains('100 articles for 0.96 $/article').should('be.visible').click()
       cy.get('main.q-page div.text-h5').contains('Description').should('be.visible').next().contains(description).should('be.visible')
       cy.get('main.q-page div.text-h5').contains('Note').should('be.visible').next().contains(SellerNote).should('be.visible')
       cy.get('main.q-page button.q-btn span.block').contains('Close Preview').should('be.visible').click()

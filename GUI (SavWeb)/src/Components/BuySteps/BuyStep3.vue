@@ -267,7 +267,7 @@ export default Vue.defineComponent({
         to: props.entry.seller,
         pay: assetStr,
         memo: orderData.value.rId,
-        dt: shipDuration.value !== undefined? + shipDuration.value + (3*24*3600): undefined, // Add three days to cancel the payment
+        dt: shipDuration.value !== undefined? + shipDuration.value + state.defaultValue.extraInvalidationTimeInSec: undefined,
       });
 
       if (result && "to" in result && "chain" in result && "pay" in result) {

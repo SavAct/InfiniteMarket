@@ -543,7 +543,7 @@ export default Vue.defineComponent({
         // Normalize region values
         let sd = Math.floor(Number(r.sd) / 1000);
         let sp = Math.floor(Number(r.sp) * 100);
-        if (Number.isNaN(sd)) sd = state.defaultValue.shipDuration;
+        if (Number.isNaN(sd)) sd = state.defaultValue.shipDuration / 1000;
         if (Number.isNaN(sp)) sp = 0;
         // Compare with existing region values
         const s = shipTo.find((s) => s.t === sd && s.p === sp);

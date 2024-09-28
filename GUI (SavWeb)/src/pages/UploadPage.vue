@@ -136,6 +136,7 @@
     </q-card>
     <q-card class="q-mt-md">
       <q-card-section>
+        <div class="q-mb-md text-subtitle1" :style="'color:#' + (darkStyle?'FFFFFFB2':'0000008A')">Quantity and discount options</div>
         <price-options-input v-model="pp" />
       </q-card-section>
     </q-card>
@@ -600,8 +601,8 @@ export default Vue.defineComponent({
           for (let k = i + 1; k < pp.value.length; k++) {
             if (Number(pp.value[i].pcs) === Number(pp.value[k].pcs)) {
               Quasar.Notify.create({
-                message: "Invalid pieces number",
-                caption: `Pieces number ${pp.value[k].pcs} is defined several times and will be removed.`,
+                message: "Invalid quantity",
+                caption: `Quantity of ${pp.value[k].pcs} is defined several times and will be removed.`,
                 color: "warning",
                 position: "top",
               });

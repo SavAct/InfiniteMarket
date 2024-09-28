@@ -341,7 +341,7 @@ export default Vue.defineComponent({
       if(!orderRequest.pcs || orderRequest.pcs < 1){
         Quasar.Notify.create({
           type: "negative",
-          message: "No pieces selected",
+          message: "No quantity selected",
           position: "top",
         });
         return;

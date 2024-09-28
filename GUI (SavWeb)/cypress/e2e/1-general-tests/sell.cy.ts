@@ -119,7 +119,7 @@ function checkOpenLink(link: string){
 function checkItemData(){
   cy.get('main.q-page div.text-bold').contains('Cheap planet with great landscapes').should('be.visible')
   cy.get('main.q-page i.q-chip__icon').contains('storefront').should('be.visible').next().contains('user.two').should('be.visible')
-  cy.get('main.q-page .q-chip__content div').contains('1 piece for 1.23 USD').should('be.visible')
+  cy.get('main.q-page .q-chip__content div').contains('1 article for 1.23 USD').should('be.visible')
   cy.get('main.q-page .q-chip__content div').contains('United Arab Emirates for 1.40 USD within 8 days').should('be.visible')
   cy.get('main.q-page .q-chip__content div').contains('2.63 USD').should('be.visible')
   cy.get('main.q-page .q-chip__content span.text-bold').contains('EOS').should('be.visible')

@@ -141,9 +141,9 @@
                     v-if="row.pp[0].pcs == 0 && Number(row.pp[0].p) > 0"
                     >&nbsp;(max.&nbsp;{{ row.pp[0].p }})</span
                   >
-                  <span>&nbsp;pieces</span>
+                  <span>&nbsp;articles</span>
                 </template>
-                <span v-else>&nbsp;piece</span>
+                <span v-else>&nbsp;article</span>
               </div>
             </q-card-section>
           </q-card-section>

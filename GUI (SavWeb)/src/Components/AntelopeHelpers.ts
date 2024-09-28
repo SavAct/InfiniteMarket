@@ -100,7 +100,7 @@ function userValidChars(val: string): boolean | string {
 /**
  * Check offline if a account name or public key is valid
  * @param user Account name or public key
- * @returns true if valid else false and return an error message
+ * @returns true if valid else an error message
  */
 export function checkUserOffline(user: string) {
   if (user.startsWith("EOS") || user.startsWith("PUB_")) {
@@ -111,9 +111,10 @@ export function checkUserOffline(user: string) {
     // User name
     if (user.length > 0 && user.length <= 13) {
       return userValidChars(user);
+    } else {
+      return "User name must be between 1 and 13 characters";
     }
   }
-  return false;
 }
 
 /**

@@ -2,7 +2,7 @@
   <div class="row full-width">
     <div class="col-3 q-pr-sm">
       <q-input
-        label="Pieces"
+        label="Quantity"
         v-model="pieces"
         type="number"
         min="1"
@@ -17,7 +17,7 @@
       min="0"
       outlined
       :hint="
-        (price / pieces).toFixed(2) + ' USD per piece'
+        (price / pieces).toFixed(2) + ' USD per article'
       "
       bottom-slots
     >
@@ -56,7 +56,7 @@ export default Vue.defineComponent({
   setup(props, context) {
     const priceInputLabel = Vue.computed(() => {
       return `Price ${props.from ? "from" : "for"} ${props.modelValue.pcs} ${
-        props.modelValue.pcs > 1 ? "pieces" : "piece"
+        props.modelValue.pcs > 1 ? "articles" : "article"
       }`;
     });
 

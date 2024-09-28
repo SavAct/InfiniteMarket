@@ -10,7 +10,7 @@
         no-caps
       />
     </div>
-    <div class="col-grow">pieces option per order.</div>
+    <div class="col-grow">quantity {{isOnlyOne?'option':'options'}} per order.</div>
     <q-icon size="sm" v-if="$q.screen.lt.sm" name="info" class="col-auto">
       <q-tooltip>{{ optionDescription }}</q-tooltip>
     </q-icon>
@@ -37,29 +37,30 @@
       @click="addPriceWithUnit"
     >
     </q-btn>
-    <div
-      v-if="isMultiple"
-      class="col-12 row q-mt-md justify-between q-gutter-sm"
-    >
-      <q-checkbox
-        class="col-grow"
-        label="Maximum pieces number per order"
-        v-model="isMaxPcs"
-      ></q-checkbox>
-      <q-input
-        v-if="isMaxPcs"
-        label="Max pieces"
-        class="col-auto"
-        dense
-        v-model="maxPcs"
-        type="number"
-        min="1"
-        outlined
-      />
-    </div>
   </div>
   <div v-else class="q-mb-sm">
     <piece-price-input v-model="pp[0].value" :rm-btn="false" />
+  </div>
+  <div
+    v-if="isMultiple || isOnlyOne"
+    class="col-12 row q-mt-sm justify-between q-gutter-sm"
+  >
+    <div class="col-grow">
+      <q-checkbox
+        label="Maximum quantity per order"
+        v-model="isMaxPcs"
+      ></q-checkbox>
+    </div>
+    <q-input
+      v-if="isMaxPcs"
+      label="Max quantity"
+      class="col-auto"
+      dense
+      v-model="maxPcs"
+      type="number"
+      min="1"
+      outlined
+    />
   </div>
 </template>
 <script lang="ts">
@@ -162,8 +163,8 @@ export default Vue.defineComponent({
         if (maxPcs.value < max) {
           maxPcs.value = max;
           Quasar.Notify.create({
-            message: "Invalid max pieces number",
-            caption: `Max pieces number per order is lower than defined in price options. Now, it was set to ${max}.`,
+            message: "Invalid max quantity number",
+            caption: `Max quantity number per order is lower than defined in price options. Now, it was set to ${max}.`,
             color: "warning",
             position: "top",
           });
@@ -217,11 +218,11 @@ export default Vue.defineComponent({
     const optionDescription = Vue.computed(() => {
       switch (option.value) {
         case PriceOption.One:
-          return "(Only one piece option per order is purchasable)";
+          return "(No quantity discount)";
         case PriceOption.Multiple:
-          return "(Multiple pieces per order are purchasable)";
+            return "(Different price levels depending on quantity)";
         case PriceOption.Predefined:
-          return "(Only predefined piece numbers are purchasable)";
+            return "(Only predefined quantity numbers purchasable)";
       }
     });
 

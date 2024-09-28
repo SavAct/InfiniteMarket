@@ -3,7 +3,7 @@
     <q-input
       class="col-auto"
       v-if="!isFixAmount"
-      label="Pieces"
+      label="Quantity"
       type="number"
       v-model="sPieces"
       outlined
@@ -193,7 +193,7 @@ export default Vue.defineComponent({
     }
 
     function ppLineHeader(opt: PiecesPrice) {
-      return ((Number(opt.p) / 100) / opt.pcs).toFixed(2) + " $/piece";
+      return ((Number(opt.p) / 100) / opt.pcs).toFixed(2) + " $/article";
     }
     function ppLine(opt: PiecesPrice, selectedView = false) {
       if (options.value.priceOption === PriceOption.One) {
@@ -202,7 +202,7 @@ export default Vue.defineComponent({
       if (selectedView && options.value.priceOption === PriceOption.Multiple) {
         return ppLineHeader(opt);
       }
-      return `${isFixAmount.value ? "" : "From up of "}${opt.pcs} ${opt.pcs == 1 ? "piece" : "pieces"} for ${((Number(opt.p) / 100) / opt.pcs).toFixed(2)} $/pcs`;
+      return `${isFixAmount.value ? "" : "From up of "}${opt.pcs} ${opt.pcs == 1 ? "article" : "articles"} for ${((Number(opt.p) / 100) / opt.pcs).toFixed(2)} $/article`;
     }
 
     Vue.onMounted(() => {
@@ -217,7 +217,7 @@ export default Vue.defineComponent({
           (((Number(selected.value.value.p) / 100) * sPieces.value) / selected.value.value.pcs).toFixed(2) +
           " USD"
         : "";
-      return (sPieces.value == 1 ? "1 piece" : sPieces.value + " pieces") + p;
+      return `${sPieces.value == 1 ? "1 article" : `${sPieces.value} articles`} ${p}`
     });
 
     return {
